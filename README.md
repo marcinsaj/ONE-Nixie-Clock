@@ -1,3 +1,3 @@
 # ONE-Nixie-Clock
 
-<p align="center"><img src="https://github.com/marcinsaj/Nixie-One-Clock/blob/master/extras/nixie-one-clock-diagram.jpg"></p>
+<p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/master/extras/one-nixie-clock-diagram.jpg"></p>
