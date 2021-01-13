@@ -11,7 +11,6 @@
 // https://github.com/adafruit/Adafruit_NeoPixel
 // https://learn.adafruit.com/adafruit-neopixel-uberguide/arduino-library-use
 
-
 // Which pin on the Arduino is connected to the NeoPixels?
 #define LED_PIN     A3
 
@@ -47,7 +46,7 @@ uint32_t led_array_color[5] =
 
 void setup() 
 {  
-  led.begin();                            // INITIALIZE NeoPixel led object
+  led.begin();                            // Initialize NeoPixel led object
   led.show();                             // Turn OFF all pixels ASAP
   led.setBrightness(255);                 // Set BRIGHTNESS 0-255
 }
@@ -153,7 +152,7 @@ void FillColorArray()
 
 void FadeColor()
 {
-  for (int i = 0 ; i <= 255; i ++) 
+  for (int i = 0; i <= 255; i ++) 
   {
     led.setBrightness(i);                 // Set current brightness      
     led.fill(red_color);                  // Fill all LEDs with a color
@@ -161,7 +160,7 @@ void FadeColor()
     led.show();                           // Update LEDs
   }
     
-  for (int i = 255 ; i >= 0; i--) 
+  for (int i = 255; i >= 0; i--) 
   {
     led.setBrightness(i);                 // Set current brightness      
     led.fill(red_color);                  // Fill all LEDs with a color
@@ -174,7 +173,7 @@ void FadeColorArray()
 {
   for (int count = 0; count < 5; count++)
   {
-    for (int i = 0 ; i <= 255; i ++) 
+    for (int i = 0; i <= 255; i ++) 
     {
       led.setBrightness(i);               // Set current brightness      
       led.fill(led_array_color[count]);   // Fill all LEDs with a color
@@ -182,7 +181,7 @@ void FadeColorArray()
       led.show();                         // Update LEDs
     }
     
-    for (int i = 255 ; i >= 0; i--) 
+    for (int i = 255; i >= 0; i--) 
     {
       led.setBrightness(i);               // Set current brightness      
       led.fill(led_array_color[count]);   // Fill all LEDs with a color
