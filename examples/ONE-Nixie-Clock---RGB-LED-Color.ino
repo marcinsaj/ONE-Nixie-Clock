@@ -1,7 +1,7 @@
-// LED backlight RGB test example
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
+// LED backlight RGB test example
 // Hardware:
 // Arduino Nano/Nano Every/Nano 33 IoT 
 // ONE Nixie Clock Arduino Shield
@@ -15,10 +15,7 @@
 #define LED_PIN     A3
 
 // How many NeoPixels are attached to the Arduino?
-#define LED_COUNT  4
-
-// NeoPixel brightness, 0 (min) to 255 (max)
-#define BRIGHTNESS 255
+#define LED_COUNT    4
 
 // Declare our NeoPixel led object:
 Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -48,11 +45,11 @@ void setup()
 {  
   led.begin();                            // Initialize NeoPixel led object
   led.show();                             // Turn OFF all pixels ASAP
-  led.setBrightness(255);                 // Set BRIGHTNESS 0-255
+  led.setBrightness(255);                 // Set brightness 0-255
 }
 
 void loop() 
-{
+{ 
   PixelColor();                           // Set LEDs RGB colors
   PixelColorArray();                      // Set LEDs RGB colors using color array
   
@@ -61,6 +58,8 @@ void loop()
   
   FadeColor();                            // Fade in/out LEDs   
   FadeColorArray();                       // Fade in/out LEDs using color array
+
+  CrossfadeColor();                       // Crossfade colors
 }
 
 void PixelColor()
@@ -94,7 +93,7 @@ void PixelColorArray()
 
   for(int i = 0; i < 4; i ++)
   {
-    led.setPixelColor(i, led_array_color[i]);    // Set color red for LED 0 
+    led.setPixelColor(i, led_array_color[i]);    // Set LEDs colors  
     led.show();                                  // Update LEDs
     delay(500);    
   }
@@ -106,7 +105,7 @@ void PixelColorArray()
 
 void FillColor()
 {
-  led.setBrightness(255);                 // Set current brightness 
+  led.setBrightness(255);                 // Set brightness 
   
   // led.fill(red_color);
   led.fill(led.Color(255, 0, 0));         // Fill all LEDs with a color red
@@ -132,11 +131,15 @@ void FillColor()
   led.fill(led.Color(255, 0, 255));       // Fill all LEDs with a color magenta
   led.show();                             // Update LEDs  
   delay(1000);
+
+  led.clear();                            // Turn off LEDs
+  led.show();                             // Update LEDs   
+  delay(1000);
 }
 
 void FillColorArray()
 {
-  led.setBrightness(255);                 // Set current brightness 
+  led.setBrightness(255);                 // Set brightness 
 
   for(int i = 0; i < 5; i++)
   {
@@ -152,21 +155,23 @@ void FillColorArray()
 
 void FadeColor()
 {
-  for (int i = 0; i <= 255; i ++) 
+  for (int i = 0; i <= 255; i ++)         // Fade in to red
   {
-    led.setBrightness(i);                 // Set current brightness      
+    led.setBrightness(i);                 // Set brightness      
     led.fill(red_color);                  // Fill all LEDs with a color
     delay(5); 
     led.show();                           // Update LEDs
   }
     
-  for (int i = 255; i >= 0; i--) 
+  for (int i = 255; i >= 0; i--)          // Fade out 
   {
     led.setBrightness(i);                 // Set current brightness      
     led.fill(red_color);                  // Fill all LEDs with a color
     delay(5); 
     led.show();                           // Update LEDs
-  }         
+  }   
+
+  delay(1000);
 }
 
 void FadeColorArray()
@@ -175,7 +180,7 @@ void FadeColorArray()
   {
     for (int i = 0; i <= 255; i ++) 
     {
-      led.setBrightness(i);               // Set current brightness      
+      led.setBrightness(i);               // Set brightness      
       led.fill(led_array_color[count]);   // Fill all LEDs with a color
       delay(5); 
       led.show();                         // Update LEDs
@@ -189,8 +194,55 @@ void FadeColorArray()
       led.show();                         // Update LEDs
     }         
   }
-     
-  led.clear();                            // Turn off LEDs
-  led.show();                             // Update LEDs   
+  
   delay(1000); 
+}
+
+void CrossfadeColor()
+{
+  led.setBrightness(255);                 // Set brightness 
+  
+  for(int i = 0; i <= 255; i++)           // Fade in to red
+  {
+    led.fill(led.Color(i, 0, 0)); 
+    delay(5);   
+    led.show();
+  }                            
+
+  for(int i = 0; i <= 255; i++)           // Crossfade to magenta
+  {
+    led.fill(led.Color(255, 0, i)); 
+    delay(5);
+    led.show();   
+  }
+
+  for(int i = 0; i <= 255; i++)           // Crossfade to blue
+  {
+    led.fill(led.Color(255 - i, 0, 255)); 
+    delay(5);
+    led.show();   
+  }
+
+  for(int i = 0; i <= 255; i++)           // Crossfade to green
+  {
+    led.fill(led.Color(0, i, 255 - i)); 
+    delay(5);      
+    led.show(); 
+  } 
+
+  for(int i = 0; i <= 255; i++)           // Crossfade to red
+  {
+    led.fill(led.Color(i, 255 - i, 0)); 
+    delay(5);     
+    led.show(); 
+  } 
+
+  for(int i = 0; i <= 255; i++)           // Fade out
+  {
+    led.fill(led.Color(255 - i, 0, 0)); 
+    delay(5);  
+    led.show();   
+  } 
+ 
+  delay(1000);    
 }
