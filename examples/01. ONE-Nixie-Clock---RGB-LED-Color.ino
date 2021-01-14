@@ -3,9 +3,15 @@
 //
 // LED backlight RGB test example
 // Hardware:
-// Arduino Nano/Nano Every/Nano 33 IoT 
-// ONE Nixie Clock Arduino Shield
-// 12V Power Supply
+// ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
+// Arduino Nano - https://store.arduino.cc/arduino-nano
+// Or Arduino Nano Every - https://store.arduino.cc/arduino-nano-every
+// Or Arduino Nano IoT 33 - https://store.arduino.cc/arduino-nano-33-iot
+// Nixie Power Supply Module and RTC DS3231 Module
+// Nixie clock require 12V, 1.5A power supply
+// Schematic ONE Nixie Clock - http://bit.ly/ONE-Nixie-Clock-Schematic
+// Schematic Nixie Power Supply Module - http://bit.ly/ONE-Nixie-Clock-NPS-Module
+// DS3231 RTC datasheet: https://datasheets.maximintegrated.com/en/ds/DS3231.pdf
 
 #include <Adafruit_NeoPixel.h>
 // https://github.com/adafruit/Adafruit_NeoPixel
