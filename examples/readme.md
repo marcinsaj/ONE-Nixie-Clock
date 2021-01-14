@@ -1,6 +1,5 @@
 - ONE-Nixie-Clock---RGB-LED-Color
-- ONE-Nixie-Clock---Nixie-Tube
-- ONE-Nixie-Clock---Nixie-Counter
+- ONE-Nixie-Clock---Nixie-Display-Digit-Symbol
 - ONE-Nixie-Clock---Classic-Nixie-Clock
 - ONE-Nixie-Clock---Arduino-Nano-Nixie-Clock-PWM-Fade-In-Out
 - ONE-Nixie-Clock---Arduino-Nano-Every-Nixie-Clock-PWM-Fade-In-Out
