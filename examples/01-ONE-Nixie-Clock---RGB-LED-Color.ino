@@ -150,7 +150,7 @@ void FillColorArray()
 
   for(int i = 0; i < 5; i++)
   {
-    led.fill(led_array_color[i]);         // Fill all LEDs with a color red
+    led.fill(led_array_color[i]);         // Fill all LEDs with a color
     led.show();                           // Update LEDs
     delay(1000);  
   }    
