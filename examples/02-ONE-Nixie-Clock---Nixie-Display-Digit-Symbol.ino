@@ -33,8 +33,8 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 // NEO_KHZ800  800 KHz bitstream for WS2812 LEDs
 // NEO_GRB     Pixels are wired for GRB bitstream
 
-// Red backlight color
-uint32_t backlight = led.Color(255, 0, 0);
+// Blue backlight color
+uint32_t backlight = led.Color(0, 0, 255);
 
 // Shift registers control pins
 #define DIN_PIN     A0
