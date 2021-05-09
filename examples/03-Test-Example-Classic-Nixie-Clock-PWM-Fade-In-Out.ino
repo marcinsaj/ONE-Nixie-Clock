@@ -71,9 +71,6 @@ int analogDetectInput = 0;
 
 // Serial monitor state
 boolean serialState = 0;
-
-// Millis delay time variable 
-unsigned long previous_millis = 0;
  
 // Bit numbers 
 //
@@ -231,14 +228,10 @@ void loop()
     // Turn ON nixie power supply module
     digitalWrite(EN_NPS_PIN, LOW);             
   }    
-    
-  // Millis time start
-  unsigned long current_millis = millis();  
 
   // Get time from RTC and display on nixie tubes
   DisplayTime();
   delay(2000);
-
 }
 
 void SetNewTime()
