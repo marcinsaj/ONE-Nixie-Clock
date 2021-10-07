@@ -5,7 +5,7 @@
 //
 // This example demonstrates how to display digits and symbols
 // Fade in/out effect for multisegment tubes has been turned off
-// because default Arduino Nano pwm frequency is to high 
+// because default Arduino Nano pwm frequency is too high 
 // and there is the undesirable effect of "singing tube" - audible noise
 // PWM option could be turned on by uncommenting two lines 
 // in ShowSymbol() function: "//analogWrite(PWM_PIN, i);" 
@@ -223,7 +223,7 @@ void ShowDigit()
 }
 
 // Fade in/out effect for multisegment tubes has been turned off
-// because default arduino pwm frequency is to high 
+// because default arduino pwm frequency is too high 
 // and there is the undesirable effect of "singing tube" - audible noise
 // PWM option could be turned on by uncommenting two lines 
 // in ShowSymbol() function: "//analogWrite(PWM_PIN, i);" 
