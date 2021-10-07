@@ -5,7 +5,7 @@
 // This example demonstrates how to display digits and symbols
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
-// Arduino Nano IoT 33 - https://store.arduino.cc/arduino-nano-33-iot
+// Arduino Nano 33 IoT - https://store.arduino.cc/arduino-nano-33-iot
 //
 // NOTE: For Arduino Nano 33 IoT use 3.3V power settings on the clock motherboard (VCC jumper)
 //
