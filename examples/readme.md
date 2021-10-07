@@ -1,5 +1,5 @@
-- ONE-Nixie-Clock---RGB-LED-Color
-- ONE-Nixie-Clock---Nixie-Display-Digit-Symbol
+- ONE-Nixie-Clock---RGB-LED-Color-Test
+- ONE-Nixie-Clock---Nixie-Display-Digit-Symbol-Test
 - ONE-Nixie-Clock---Arduino-Nano-Digit-Symbol-PWM-Fade-In-Out
 - ONE-Nixie-Clock---Arduino-Nano-Every-Digit-Symbol-PWM-Fade-In-Out
 - ONE-Nixie-Clock---Arduino-Nano-33-IoT-Digit-Symbol-PWM-Fade-In-Out
