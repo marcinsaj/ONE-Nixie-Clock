@@ -2,7 +2,7 @@
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
 // Test Example - Classic Nixie Clock with PWM fade in/out effect
-// Arduino Nano PWM default frequency value is too high 
+// Arduino Nano Every PWM default frequency value is too high 
 // and "singing tube" audible noise may occur.
 //
 // This example demonstrates how to set new time, display (time) digits or symbols 
