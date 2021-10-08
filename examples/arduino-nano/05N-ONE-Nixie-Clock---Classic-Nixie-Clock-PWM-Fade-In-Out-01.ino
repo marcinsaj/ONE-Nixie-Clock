@@ -32,6 +32,10 @@ RTC_DS3231 rtc;
 #define hourFormat    12     // 12 Hour Clock or 24 Hour Clock
 // **************************************************************************
 
+// Set Fade Time ************************************************************
+#define fadeDelay     10      // Best values 5-12  
+// **************************************************************************
+
 // NeoPixels LEDs pin
 #define LED_PIN       A3
 
@@ -48,6 +52,7 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 // Blue backlight color
 uint32_t hour_color = led.Color(0, 0, 255);
+// Green backlight color
 uint32_t minute_color = led.Color(0, 255,0);
 
 // Shift registers control pins
@@ -132,6 +137,14 @@ uint16_t symbol_nixie_tube[]={
   0b0000100110001000    // Z             
 };
 
+// Nixie tube cathode no.14 (underscore symbol)
+uint16_t hour_symbol = 0b0100000000000000;
+
+// Underscore symbol flag, hour display distinguishing feature
+// for multisegment tubes
+// 0 - turn off, 1 - turn on
+boolean hourUnderscore = 0;
+
 // Bit notation of 10-segment tube digits 
 uint16_t digit_nixie_tube[]={
   0b0000000000000001,   // 0 
@@ -186,7 +199,7 @@ void setup()
   unsigned long millis_time_now = millis();
   unsigned long millis_time_now_2 = millis();
     
-  // Wait 5 seconds
+  // Wait 10 seconds
   while((millis() < millis_time_now + 10000))
   {    
     // Print progress bar      
@@ -284,6 +297,10 @@ void DisplayTime()
   Serial.println(timeSecond);      
 
   int digit;
+
+  // Underscore symbol turn on for multisegment tubes
+  hourUnderscore = 1; 
+  
   // Extract individual digits
   digit  = (timeHour / 10) % 10;
   NixieDisplay(digit, hour_color);
@@ -292,6 +309,9 @@ void DisplayTime()
   NixieDisplay(digit, hour_color);
     
   delay(400);
+
+  // Underscore symbol turn off for multisegment tubes
+  hourUnderscore = 0; 
   
   digit  = (timeMinute / 10) % 10;
   NixieDisplay(digit, minute_color); 
@@ -319,7 +339,7 @@ void NixieDisplay(uint16_t digit, uint32_t backlight_color)
 
 // PWM fade in/out effect
 void ShowDigit(uint16_t digit, uint32_t backlight_color)
-{       
+{         
   ShiftOutData(digit_nixie_tube[digit]);
     
   // Fade-in from min to max 
@@ -331,7 +351,7 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     led.show();                             // Update LEDs
       
     // wait for 8 milliseconds to see the fade in effect
-    delay(8);
+    delay(fadeDelay);
   }  
 
   delay(500);
@@ -345,7 +365,7 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     led.show();                             // Update LEDs
 
     // wait for 8 milliseconds to see the fade out effect
-    delay(8);
+    delay(fadeDelay);
   } 
   
   ClearNixieTube();   
@@ -353,8 +373,13 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
 
 // PWM fade in/out effect
 void ShowSymbol(uint16_t digit, uint32_t backlight_color)
-{       
-  ShiftOutData(symbol_nixie_tube[digit]);
+{        
+  uint16_t currentDigit;
+
+  if(hourUnderscore == 1) currentDigit = symbol_nixie_tube[digit] | hour_symbol;
+  else currentDigit = symbol_nixie_tube[digit];   
+   
+  ShiftOutData(currentDigit);
     
   // fade in from min to max in decrements of 5 points
   for (int i = 255 ; i >= 0; i = i -5) 
@@ -365,7 +390,7 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.show();                             // Update LEDs
       
     // wait for 8 milliseconds to see the fade in effect
-    delay(8);
+    delay(fadeDelay);
   }  
 
   delay(500);
@@ -379,7 +404,7 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.show();                             // Update LEDs
 
     // wait for 88 milliseconds to see the fade out effect
-    delay(8);
+    delay(fadeDelay);
   } 
   
   ClearNixieTube();   
