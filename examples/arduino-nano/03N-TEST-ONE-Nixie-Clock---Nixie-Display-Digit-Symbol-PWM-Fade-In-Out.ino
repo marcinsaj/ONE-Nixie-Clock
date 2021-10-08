@@ -3,13 +3,6 @@
 //
 // Nixie Counter Example with PWM fade in/out effect
 //
-// This example demonstrates how to display digits and symbols
-// Fade in/out effect for multisegment tubes has been turned off
-// because default Arduino Nano pwm frequency is too high 
-// and there is the undesirable effect of "singing tube" - audible noise
-// PWM option could be turned on by uncommenting two lines 
-// in ShowSymbol() function: "//analogWrite(PWM_PIN, i);" 
-//
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
 // Arduino Nano - https://store.arduino.cc/arduino-nano
@@ -139,12 +132,14 @@ uint16_t digit_nixie_tube[]={
  
 void setup() 
 {  
-  led.begin();                            // Initialize NeoPixel led object
-  led.show();                             // Turn OFF all pixels ASAP
-  led.setBrightness(255);                 // Set brightness 0-255  
+  led.begin();                             // Initialize NeoPixel led object
+  led.show();                              // Turn OFF all pixels ASAP
+  led.setBrightness(255);                  // Set brightness 0-255  
   
+  TCCR1B = TCCR1B & B11111000 | B00000100; // Set PWM frequency on 122.55 Hz
+ 
   pinMode(EN_NPS_PIN, OUTPUT);
-  digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
+  digitalWrite(EN_NPS_PIN, HIGH);          // Turn OFF nixie power supply module 
 
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
@@ -222,11 +217,6 @@ void ShowDigit()
   }
 }
 
-// Fade in/out effect for multisegment tubes has been turned off
-// because default arduino pwm frequency is too high 
-// and there is the undesirable effect of "singing tube" - audible noise
-// PWM option could be turned on by uncommenting two lines 
-// in ShowSymbol() function: "//analogWrite(PWM_PIN, i);" 
 void ShowSymbol()
 {       
   for(int symbol = 0; symbol < 36; symbol++)
@@ -236,13 +226,13 @@ void ShowSymbol()
     // fade in from min to max in decrements of 5 points
     for (int i = 255 ; i >= 0; i = i -5) 
     {
-      // analogWrite(PWM_PIN, i);
+      analogWrite(PWM_PIN, i);
       led.setBrightness(255 - i);             // Set brightness
       led.fill(backlight);                    // Fill all LEDs with a color
       led.show();                             // Update LEDs
       
-      // wait for 10 milliseconds to see the fade in effect
-      delay(10);
+      // wait for 8 milliseconds to see the fade in effect
+      delay(8);
     }  
 
     delay(500);
@@ -250,13 +240,13 @@ void ShowSymbol()
     // fade out from max to min in increments of 5 points
     for (int i = 0 ; i <= 255; i = i +5) 
     {
-      // analogWrite(PWM_PIN, i);
+      analogWrite(PWM_PIN, i);
       led.setBrightness(255 - i);             // Set brightness
       led.fill(backlight);                    // Fill all LEDs with a color
       led.show();                             // Update LEDs
 
-      // wait for 10 milliseconds to see the fade out effect
-      delay(10);
+      // wait for 8 milliseconds to see the fade out effect
+      delay(8);
     } 
   
     ClearNixieTube();   
