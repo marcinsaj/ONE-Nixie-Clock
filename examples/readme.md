@@ -4,7 +4,7 @@
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/examples/arduino-nano/03N-TEST-ONE-Nixie-Clock---Nixie-Display-Digit-Symbol-PWM-Fade-In-Out.ino">03N-TEST-ONE-Nixie-Clock---Nixie-Display-Digit-Symbol-PWM-Fade-In-Out</a>
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/examples/arduino-nano/04N-ONE-Nixie-Clock---Classic-Nixie-Clock.ino">04N-ONE-Nixie-Clock---Classic-Nixie-Clock</a>
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/examples/arduino-nano/05N-ONE-Nixie-Clock---Classic-Nixie-Clock-PWM-Fade-In-Out-01.ino">05N-ONE-Nixie-Clock---Classic-Nixie-Clock-PWM-Fade-In-Out-01</a>
-- 06N-ONE-Nixie-Clock---Classic-Nixie-Clock-PWM-N-Fade-In-Out-02
+- 06N-ONE-Nixie-Clock---Classic-Nixie-Clock-PWM-Fade-In-Out-02
 
 # ARDUINO NANO EVERY
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/examples/arduino-nano-every/01E-TEST-ONE-Nixie-Clock---RGB-LED-Color.ino">01E-TEST-ONE-Nixie-Clock---RGB-LED-Color</a>
