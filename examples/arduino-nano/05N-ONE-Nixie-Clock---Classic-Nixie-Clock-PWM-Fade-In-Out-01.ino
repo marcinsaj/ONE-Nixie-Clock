@@ -1,10 +1,7 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Test Example - Classic Nixie Clock with PWM fade in/out effect
-// Arduino Nano PWM default frequency value is too high 
-// and "singing tube" audible noise may occur.
-//
+// Classic Nixie Clock with PWM fade in/out effect
 // This example demonstrates how to set new time, display (time) digits or symbols 
 // fade in/out effect and fade in/out backlight color effect.
 //
@@ -159,7 +156,9 @@ void setup()
   led.setBrightness(255);                 // Set brightness 0-255  
 
   delay(5000);
-  
+ 
+  TCCR1B = TCCR1B & B11111000 | B00000100; // Set PWM frequency on 122.55 Hz
+ 
   pinMode(EN_NPS_PIN, OUTPUT);
   digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
 
@@ -366,7 +365,7 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.show();                             // Update LEDs
       
     // wait for 10 milliseconds to see the fade in effect
-    delay(10);
+    delay(8);
   }  
 
   delay(500);
@@ -380,7 +379,7 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.show();                             // Update LEDs
 
     // wait for 10 milliseconds to see the fade out effect
-    delay(10);
+    delay(8);
   } 
   
   ClearNixieTube();   
