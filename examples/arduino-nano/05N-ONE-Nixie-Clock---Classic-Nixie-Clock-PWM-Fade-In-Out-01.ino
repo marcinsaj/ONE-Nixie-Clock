@@ -364,7 +364,7 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
       
-    // wait for 10 milliseconds to see the fade in effect
+    // wait for 8 milliseconds to see the fade in effect
     delay(8);
   }  
 
@@ -378,7 +378,7 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
 
-    // wait for 10 milliseconds to see the fade out effect
+    // wait for 88 milliseconds to see the fade out effect
     delay(8);
   } 
   
