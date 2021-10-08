@@ -231,8 +231,8 @@ void ShowSymbol()
       led.fill(backlight);                    // Fill all LEDs with a color
       led.show();                             // Update LEDs
       
-      // wait for 8 milliseconds to see the fade in effect
-      delay(8);
+      // wait for 10 milliseconds to see the fade in effect
+      delay(10);
     }  
 
     delay(500);
@@ -245,8 +245,8 @@ void ShowSymbol()
       led.fill(backlight);                    // Fill all LEDs with a color
       led.show();                             // Update LEDs
 
-      // wait for 8 milliseconds to see the fade out effect
-      delay(8);
+      // wait for 10 milliseconds to see the fade out effect
+      delay(10);
     } 
   
     ClearNixieTube();   
