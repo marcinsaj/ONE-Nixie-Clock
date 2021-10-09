@@ -2,16 +2,14 @@
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
 // Classic Nixie Clock without PWM fade in/out effect
-// This example demonstrates how to set new time using serial monitor, display (time) digits or symbols 
-// and backlight color effect.
+// This example demonstrates how to set new time using serial monitor, 
+// display (time) digits or symbols and backlight color effect.
 //
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
 // Arduino Nano - https://store.arduino.cc/arduino-nano
 //
 // NOTE: For Arduino Nano use 5V power settings on the clock motherboard (VCC jumper)
-//
-// NOTE: For Arduino Nano Every use 5V power settings on the clock motherboard (VCC jumper)
 //
 // Nixie Tube Socket - https://bit.ly/nixie-socket & https://bit.ly/NixieSocket-Project
 // Nixie Power Supply module and RTC DS3231 module
