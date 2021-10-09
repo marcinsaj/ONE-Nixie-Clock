@@ -2,8 +2,8 @@
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
 // Classic Nixie Clock without PWM fade in/out effect
-// This example demonstrates how to set new time, display (time) digits or symbols 
-// and backlight color effect.
+// This example demonstrates how to set time using serial monitor, 
+// display (time) digits or symbols and backlight color effect.
 //
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
