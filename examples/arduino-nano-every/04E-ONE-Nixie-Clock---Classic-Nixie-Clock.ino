@@ -1,9 +1,9 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Classic Nixie Clock with PWM fade in/out effect
+// Classic Nixie Clock without PWM fade in/out effect
 // This example demonstrates how to set new time, display (time) digits or symbols 
-// fade in/out effect and fade in/out backlight color effect.
+// and backlight color effect.
 //
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
@@ -355,7 +355,7 @@ void DisplayTime()
   digit  = (timeMinute / 1)  % 10;
   NixieDisplay(digit, minute_color);
 
-  delay(2000);    
+  delay(1500);    
 }
 
 // If a high state appears on the analog input, 
@@ -375,7 +375,6 @@ void NixieDisplay(uint16_t digit, uint32_t backlight_color)
   else ShowDigit(digit, backlight_color);
 }
 
-// PWM fade in/out effect
 void ShowDigit(uint16_t digit, uint32_t backlight_color)
 {         
   ShiftOutData(digit_nixie_tube[digit]);
@@ -387,11 +386,11 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
       
-    // wait for 16 milliseconds to see the fade in effect
-    delay(16);
+    // wait for 10 milliseconds to see the fade in effect
+    delay(10);
   }  
 
-  delay(500);
+  delay(300);
 
   // Fade-out from max to min
   for (int i = 0 ; i <= 255; i = i + 5) 
@@ -400,14 +399,14 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
 
-    // wait for 16 milliseconds to see the fade out effect
-    delay(16);
+    // wait for 10 milliseconds to see the fade out effect
+    delay(10);
   } 
   
-  ClearNixieTube();   
+  ClearNixieTube(); 
+  delay(300);   
 }
 
-// PWM fade in/out effect
 void ShowSymbol(uint16_t digit, uint32_t backlight_color)
 {        
   uint16_t currentDigit;
@@ -424,12 +423,12 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
       
-    // wait for 16 milliseconds to see the fade in effect
+    // wait for 10 milliseconds to see the fade in effect
     delay(10);
   }  
 
-  delay(500);
-
+  delay(400);
+  
   // fade out from max to min in increments of 5 points
   for (int i = 0 ; i <= 255; i = i + 5) 
   {
@@ -437,11 +436,12 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
 
-    // wait for 16 milliseconds to see the fade out effect
+    // wait for 10 milliseconds to see the fade out effect
     delay(10);
   } 
   
-  ClearNixieTube();   
+  ClearNixieTube();  
+  delay(300); 
 }
 
 // Turn off nixie tube
