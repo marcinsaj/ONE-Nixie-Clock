@@ -36,6 +36,11 @@ RTC_DS3231 rtc;
 #define fadeDelay     10      // Best values 5-12  
 // **************************************************************************
 
+// Cathode poisoning prevention settings*************************************
+// How often to run the cathode poisoning prevention routine
+#define howOftenRoutine   1     // 0 - none, 1 - everytime, 2... and so on
+// **************************************************************************
+
 // NeoPixels LEDs pin
 #define LED_PIN       A3
 
@@ -50,10 +55,12 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 // NEO_KHZ800  800 KHz bitstream for WS2812 LEDs
 // NEO_GRB     Pixels are wired for GRB bitstream
 
-// Blue backlight color
-uint32_t hour_color = led.Color(0, 0, 255);
-// Green backlight color
-uint32_t minute_color = led.Color(0, 255,0);
+// Backlight color settings *************************************************
+// Hour backlight color
+uint32_t hour_color = led.Color(0, 0, 255);   // Blue
+// Minute backlight color
+uint32_t minute_color = led.Color(0, 255, 0);  // Green
+// **************************************************************************
 
 // Shift registers control pins
 #define DIN_PIN     A0
@@ -71,6 +78,8 @@ uint32_t minute_color = led.Color(0, 255,0);
 #define DETECT_PIN  A6    
 
 int analogDetectInput = 0;
+
+int loopCounter = 0;
 
 // Serial monitor state
 boolean serialState = 0;
@@ -137,6 +146,35 @@ uint16_t symbol_nixie_tube[]={
   0b0000100110001000    // Z             
 };
 
+uint16_t animation[]={
+  0b0000000000000010,
+  0b0000000000000001,
+  0b0000000110000000,
+  0b0010000101000000,
+  0b0011000100100000,  
+  0b0111000100010000,
+  0b0111100100001000,
+  0b0111110100000100,  
+  0b0111111100000010,
+  0b0111111100000001,
+  0b0111111110000000,
+  0b0111111101000000,
+  0b0111111100100000,
+  0b0111111100010000,
+  0b0111111100001000,
+  0b0111111100000100,
+  0b0111111100000010,
+  0b0111111100000001,
+  0b0111111010000000,
+  0b0101111001000000,
+  0b0100111000100000,
+  0b0000111000010000,
+  0b0000011000001000,
+  0b0000001000000100,
+  0b0000000000000010, 
+  0b0000000000000000     
+};
+
 // Nixie tube cathode no.14 (underscore symbol)
 uint16_t hour_symbol = 0b0100000000000000;
 
@@ -190,10 +228,11 @@ void setup()
   pinMode(PWM_PIN, OUTPUT);
   digitalWrite(PWM_PIN, LOW);  
       
-  Serial.println("#############################################################");
-  Serial.println("------------- Test Example - Classic Nixie Clock ------------");
-  Serial.println("---------------- If you want to set new Time ----------------");
-  Serial.println("--------------- press ENTER within 10 seconds ---------------");
+  Serial.println("##############################################################");
+  Serial.println("---------------------Classic Nixie Clock ---------------------");
+  Serial.println("---------------- If you want to set new Time -----------------");
+  Serial.println("----------- press ENTER for Arduino IDE up to 1.8 ------------"); 
+  Serial.println("----------- press CTRL+ENTER for Arduino IDE 2.0 -------------"); 
 
   // Millis time start
   unsigned long millis_time_now = millis();
@@ -232,6 +271,8 @@ void setup()
 
 void loop() 
 {
+  loopCounter++;
+  
   // Set a new time if settings have been selected
   if(serialState == 1)
   {
@@ -244,15 +285,22 @@ void loop()
 
   // Get time from RTC and display on nixie tubes
   DisplayTime();
-  delay(2000);
+  
+  // How often to run the cathode poisoning prevention routine
+  if(loopCounter == howOftenRoutine) 
+  {
+    CathodePoisoningPrevention();
+    loopCounter = 0;
+  }
 }
 
 void SetNewTime()
 {  
   Serial.println("--------------- Enter the TIME without spaces ----------------");
   Serial.println("--------------- in the HHMM format e.g. 0923 -----------------");
-  Serial.println("- and press enter when you are ready to send data to the RTC -");
-  Serial.println('\n');
+  Serial.println("------- and when you are ready to send data to the RTC -------");
+  Serial.println("------------ press ENTER for Arduino IDE up to 1.8 -----------"); 
+  Serial.println("------------ press CTRL+ENTER for Arduino IDE 2.0 ------------"); 
 
   // Clear serial buffer
   while(Serial.available())
@@ -317,7 +365,9 @@ void DisplayTime()
   NixieDisplay(digit, minute_color); 
    
   digit  = (timeMinute / 1)  % 10;
-  NixieDisplay(digit, minute_color);    
+  NixieDisplay(digit, minute_color); 
+
+  delay(1500);
 }
 
 // If a high state appears on the analog input, 
@@ -350,7 +400,7 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
       
-    // wait for 8 milliseconds to see the fade in effect
+    // wait to see the fade in effect
     delay(fadeDelay);
   }  
 
@@ -364,7 +414,7 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
 
-    // wait for 8 milliseconds to see the fade out effect
+    // wait to see the fade out effect
     delay(fadeDelay);
   } 
   
@@ -389,7 +439,7 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
       
-    // wait for 8 milliseconds to see the fade in effect
+    // wait to see the fade in effect
     delay(fadeDelay);
   }  
 
@@ -403,11 +453,43 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
 
-    // wait for 88 milliseconds to see the fade out effect
+    // wait to see the fade out effect
     delay(fadeDelay);
   } 
   
   ClearNixieTube();   
+}
+
+void CathodePoisoningPrevention()
+{
+  delay(1000);
+
+  // Turn off PWM
+  digitalWrite(PWM_PIN, LOW);
+  
+  // 15 cathodes nixie tube 
+  if(DetectNixieTube() == true)
+  {
+    for(int i = 0; i < 26; i++)
+    {
+      ShiftOutData(animation[i]); 
+      delay(80);
+    }
+  }
+  else  // 10 cathodes nixie tube
+  {
+    for(int i = 0; i <= 3; i++)
+    {
+      for(int j = 0; j < 10; j++)
+      {
+        ShiftOutData(digit_nixie_tube[j]); 
+        delay(80);
+      }
+    }  
+  }
+  
+  ClearNixieTube();
+  delay(1000);
 }
 
 // Turn off nixie tube
