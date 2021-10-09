@@ -1,10 +1,7 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Test Example - Classic Nixie Clock with PWM fade in/out effect
-// Arduino Nano Every PWM default frequency value is too high 
-// and "singing tube" audible noise may occur.
-//
+// Classic Nixie Clock with PWM fade in/out effect
 // This example demonstrates how to set new time, display (time) digits or symbols 
 // fade in/out effect and fade in/out backlight color effect.
 //
@@ -51,6 +48,7 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 // Blue backlight color
 uint32_t hour_color = led.Color(0, 0, 255);
+// Green backlight color
 uint32_t minute_color = led.Color(0, 255,0);
 
 // Shift registers control pins
@@ -135,6 +133,14 @@ uint16_t symbol_nixie_tube[]={
   0b0000100110001000    // Z             
 };
 
+// Nixie tube cathode no.14 (underscore symbol)
+uint16_t hour_symbol = 0b0100000000000000;
+
+// Underscore symbol flag, hour display distinguishing feature
+// for multisegment tubes
+// 0 - turn off, 1 - turn on
+boolean hourUnderscore = 0;
+
 // Bit notation of 10-segment tube digits 
 uint16_t digit_nixie_tube[]={
   0b0000000000000001,   // 0 
@@ -159,7 +165,7 @@ void setup()
   led.setBrightness(255);                 // Set brightness 0-255  
 
   delay(5000);
-  
+ 
   pinMode(EN_NPS_PIN, OUTPUT);
   digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
 
@@ -178,19 +184,19 @@ void setup()
   pinMode(PWM_PIN, OUTPUT);
   digitalWrite(PWM_PIN, LOW);  
       
-  Serial.println("#############################################################");
-  Serial.println("------------- Test Example - Classic Nixie Clock ------------");
-  Serial.println("---------------- If you want to set new Time ----------------");
-  Serial.println("--------------- press ENTER within 10 seconds ---------------");
+  Serial.println("##############################################################");
+  Serial.println("------------ Test Example - Classic Nixie Clock --------------");
+  Serial.println("---------------- If you want to set new Time -----------------");
+  Serial.println("----------- press ENTER for Arduino IDE up to 1.8 ------------"); 
+  Serial.println("----------- press CTRL+ENTER for Arduino IDE 2.0 -------------"); 
 
   // Millis time start
   unsigned long millis_time_now = millis();
   unsigned long millis_time_now_2 = millis();
     
-  // Wait 5 seconds
+  // Wait 10 seconds
   while((millis() < millis_time_now + 10000))
-  {    
-    // Print progress bar      
+  {         
     if (millis() - millis_time_now_2 > 160)
     {
       Serial.print("#");
@@ -214,8 +220,10 @@ void setup()
   if(serialState == 0)
   {
     // Turn on the nixie power module if settings have not been selected
-    digitalWrite(EN_NPS_PIN, LOW);   
-  }    
+    digitalWrite(EN_NPS_PIN, LOW); 
+    // Set new PWM frequency
+    NewPWMFreq();  
+  }   
 }
 
 void loop() 
@@ -227,19 +235,36 @@ void loop()
     serialState = 0;
     
     // Turn ON nixie power supply module
-    digitalWrite(EN_NPS_PIN, LOW);             
+    digitalWrite(EN_NPS_PIN, LOW);
+    // Set new PWM frequency
+    NewPWMFreq();             
   }    
 
   // Get time from RTC and display on nixie tubes
   DisplayTime();
-  delay(2000);
+  DelayTime(2000);
+}
+
+void NewPWMFreq()
+{
+  // Turn off timer while we change parameters
+  TCA0.SINGLE.CTRLA &= ~TCA_SINGLE_ENABLE_bm;
+  // Clear all CLKSEL bits
+  TCA0.SINGLE.CTRLA &= ~TCA_SINGLE_CLKSEL_gm;
+  // Deafult prescaler is 64, set new prescaler 16 times more to 1024
+  // Default PWM frequency 976Hz, new PWM frequency 61Hz                                    
+  TCA0.SINGLE.CTRLA |= TCA_SINGLE_CLKSEL_DIV1024_gc;
+  // Re-enable timer
+  TCA0.SINGLE.CTRLA |= TCA_SINGLE_ENABLE_bm;
 }
 
 void SetNewTime()
-{  
+{ 
   Serial.println("--------------- Enter the TIME without spaces ----------------");
   Serial.println("--------------- in the HHMM format e.g. 0923 -----------------");
-  Serial.println("- and press enter when you are ready to send data to the RTC -");
+  Serial.println("------- and when you are ready to send data to the RTC -------");
+  Serial.println("------------ press ENTER for Arduino IDE up to 1.8 -----------"); 
+  Serial.println("------------ press CTRL+ENTER for Arduino IDE 2.0 ------------"); 
   Serial.println('\n');
 
   // Clear serial buffer
@@ -285,6 +310,10 @@ void DisplayTime()
   Serial.println(timeSecond);      
 
   int digit;
+
+  // Underscore symbol turn on for multisegment tubes
+  hourUnderscore = 1; 
+  
   // Extract individual digits
   digit  = (timeHour / 10) % 10;
   NixieDisplay(digit, hour_color);
@@ -292,7 +321,10 @@ void DisplayTime()
   digit  = (timeHour / 1)  % 10;
   NixieDisplay(digit, hour_color);
     
-  delay(400);
+  DelayTime(400);
+
+  // Underscore symbol turn off for multisegment tubes
+  hourUnderscore = 0; 
   
   digit  = (timeMinute / 10) % 10;
   NixieDisplay(digit, minute_color); 
@@ -320,33 +352,35 @@ void NixieDisplay(uint16_t digit, uint32_t backlight_color)
 
 // PWM fade in/out effect
 void ShowDigit(uint16_t digit, uint32_t backlight_color)
-{       
+{         
   ShiftOutData(digit_nixie_tube[digit]);
     
   // Fade-in from min to max 
-  for (int i = 255 ; i >= 0; i = i -5) 
+  for (int i = 255 ; i >= 0; i = i - 10) 
   {
+    if(i == 5) i = 0;                      // 255/10 = 25 steps and rest 5
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
       
-    // wait for 8 milliseconds to see the fade in effect
-    delay(8);
+    // wait for 16 milliseconds to see the fade in effect
+    DelayTime(16);
   }  
 
-  delay(500);
+  DelayTime(500);
 
   // Fade-out from max to min
-  for (int i = 0 ; i <= 255; i = i +5) 
+  for (int i = 0 ; i <= 255; i = i + 10) 
   {
+    if(i == 250) i = 255;                    // 255/10 = 25 steps and rest 5
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
 
-    // wait for 8 milliseconds to see the fade out effect
-    delay(8);
+    // wait for 16 milliseconds to see the fade out effect
+    DelayTime(16);
   } 
   
   ClearNixieTube();   
@@ -354,33 +388,40 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
 
 // PWM fade in/out effect
 void ShowSymbol(uint16_t digit, uint32_t backlight_color)
-{       
-  ShiftOutData(symbol_nixie_tube[digit]);
+{        
+  uint16_t currentDigit;
+
+  if(hourUnderscore == 1) currentDigit = symbol_nixie_tube[digit] | hour_symbol;
+  else currentDigit = symbol_nixie_tube[digit];   
+   
+  ShiftOutData(currentDigit);
     
   // fade in from min to max in decrements of 5 points
-  for (int i = 255 ; i >= 0; i = i -5) 
+  for (int i = 255 ; i >= 0; i = i - 10) 
   {
+    if(i == 5) i = 0;                       // 255/10 = 25 steps and rest 5  
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
       
-    // wait for 10 milliseconds to see the fade in effect
-    delay(10);
+    // wait for 16 milliseconds to see the fade in effect
+    DelayTime(16);
   }  
 
-  delay(500);
+  DelayTime(500);
 
   // fade out from max to min in increments of 5 points
-  for (int i = 0 ; i <= 255; i = i +5) 
+  for (int i = 0 ; i <= 255; i = i + 10) 
   {
+    if(i == 250) i = 255;                   // 255/10 = 25 steps and rest 5 
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
     led.show();                             // Update LEDs
 
-    // wait for 10 milliseconds to see the fade out effect
-    delay(10);
+    // wait for 16 milliseconds to see the fade out effect
+    DelayTime(16);
   } 
   
   ClearNixieTube();   
@@ -390,6 +431,14 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
 void ClearNixieTube()
 {
   ShiftOutData(0);  
+}
+
+// Recalculated delay time
+void DelayTime(uint16_t wait)
+{
+  // delay() affected by new TCA0 settings (PWM frequency)
+  // New delay time = delay time / 16
+  delay(wait/16);
 }
 
 void ShiftOutData(uint16_t character)
