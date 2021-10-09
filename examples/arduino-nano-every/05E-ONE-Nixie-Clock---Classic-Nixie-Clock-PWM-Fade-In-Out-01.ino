@@ -70,7 +70,7 @@ int analogDetectInput = 0;
 
 // Serial monitor state
 boolean serialState = 0;
- 
+
 // Bit numbers 
 //
 //            8
@@ -131,6 +131,35 @@ uint16_t symbol_nixie_tube[]={
   0b0000000010101010,   // X
   0b0000000010001010,   // Y
   0b0000100110001000    // Z             
+};
+
+uint16_t animation[]={
+  0b0000000000000010,
+  0b0000000000000001,
+  0b0000000110000000,
+  0b0010000101000000,
+  0b0011000100100000,  
+  0b0111000100010000,
+  0b0111100100001000,
+  0b0111110100000100,  
+  0b0111111100000010,
+  0b0111111100000001,
+  0b0111111110000000,
+  0b0111111101000000,
+  0b0111111100100000,
+  0b0111111100010000,
+  0b0111111100001000,
+  0b0111111100000100,
+  0b0111111100000010,
+  0b0111111100000001,
+  0b0111111010000000,
+  0b0101111001000000,
+  0b0100111000100000,
+  0b0000111000010000,
+  0b0000011000001000,
+  0b0000001000000100,
+  0b0000000000000010, 
+  0b0000000000000000     
 };
 
 // Nixie tube cathode no.14 (underscore symbol)
@@ -242,7 +271,7 @@ void loop()
 
   // Get time from RTC and display on nixie tubes
   DisplayTime();
-  DelayTime(2000);
+  CathodePoisoningPrevention();
 }
 
 void NewPWMFreq()
@@ -439,6 +468,36 @@ void DelayTime(uint16_t wait)
   // delay() affected by new TCA0 settings (PWM frequency)
   // New delay time = delay time / 16
   delay(wait/16);
+}
+
+void CathodePoisoningPrevention()
+{
+  DelayTime(1000);
+  analogWrite(PWM_PIN, 0);
+
+  // 15 cathodes nixie tube 
+  if(DetectNixieTube() == true)
+  {
+    for(int i = 0; i < 26; i++)
+    {
+      ShiftOutData(animation[i]); 
+      DelayTime(80);
+    }
+  }
+  else  // 10 cathodes nixie tube
+  {
+    for(int i = 0; i <= 3; i++)
+    {
+      for(int j = 0; j < 10; j++)
+      {
+        ShiftOutData(digit_nixie_tube[j]); 
+        DelayTime(80);
+      }
+    }  
+  }
+  
+  ClearNixieTube();
+  DelayTime(1000);
 }
 
 void ShiftOutData(uint16_t character)
