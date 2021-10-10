@@ -135,7 +135,9 @@ void setup()
 
   led.fill(backlight);                    // Fill all LEDs with a color
   led.show();                             // Update LEDs
-  
+ 
+  delay(1000);
+ 
   pinMode(EN_NPS_PIN, OUTPUT);
   digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
 
