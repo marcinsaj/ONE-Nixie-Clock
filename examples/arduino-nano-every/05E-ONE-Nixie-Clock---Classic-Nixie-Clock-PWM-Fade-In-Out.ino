@@ -28,8 +28,21 @@
 // RTC library declaration
 RTC_DS3231 rtc;
 
+// **************************************************************************
+// To modify the fade in/out effect,
+// you need to change the number of PWM loop steps (5-10) "i = i - steps" 
+// and/or the value (16, 32, 48) of "DelayTime(value); 
+// in ShowSymbol(); or/and ShowDigit();
+// **************************************************************************
+
 // Choose Time Format *******************************************************
 #define hourFormat    12     // 12 Hour Clock or 24 Hour Clock
+// **************************************************************************
+
+// Cathode poisoning prevention settings*************************************
+// How often to run the cathode poisoning prevention routine
+#define howOftenRoutine   1     // 0 - none, 1 - everytime, 
+                                // 2 - every second time and so on
 // **************************************************************************
 
 // NeoPixels LEDs pin
@@ -65,6 +78,8 @@ uint32_t minute_color = led.Color(0, 255,0);
 // The clock has a built-in detection mechanism 
 // for 15 segment nixie tubes (e.g. B-7971, B-8971)
 #define DETECT_PIN  A6    
+
+int loopCounter = 0;
 
 int analogDetectInput = 0;
 
@@ -257,6 +272,8 @@ void setup()
 
 void loop() 
 {
+  loopCounter++;
+
   // Set a new time if settings have been selected
   if(serialState == 1)
   {
@@ -271,7 +288,13 @@ void loop()
 
   // Get time from RTC and display on nixie tubes
   DisplayTime();
-  CathodePoisoningPrevention();
+  
+  // How often to run the cathode poisoning prevention routine
+  if(loopCounter == howOftenRoutine) 
+  {
+    CathodePoisoningPrevention();
+    loopCounter = 0;
+  }
 }
 
 void NewPWMFreq()
@@ -380,14 +403,16 @@ void NixieDisplay(uint16_t digit, uint32_t backlight_color)
 }
 
 // PWM fade in/out effect
+// To modify the effect, you need to change the number of PWM loop steps "i = i - steps" 
+// and/or the value (16, 32, 48) of "DelayTime(value);"
 void ShowDigit(uint16_t digit, uint32_t backlight_color)
 {         
   ShiftOutData(digit_nixie_tube[digit]);
     
-  // Fade-in from min to max 
-  for (int i = 255 ; i >= 0; i = i - 10) 
+  // fade in from min to max in decrements of 8 points
+  for (int i = 255 ; i >= 0; i = i - 8) 
   {
-    if(i == 5) i = 0;                      // 255/10 = 25 steps and rest 5
+    if(i == 7) i = 0;                       // 255/8 = 31 steps and rest 7  
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
@@ -397,12 +422,12 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     DelayTime(16);
   }  
 
-  DelayTime(500);
+  DelayTime(400);
 
-  // Fade-out from max to min
-  for (int i = 0 ; i <= 255; i = i + 10) 
+  // fade out from max to min in increments of 8 points
+  for (int i = 0 ; i <= 255; i = i + 8) 
   {
-    if(i == 250) i = 255;                    // 255/10 = 25 steps and rest 5
+    if(i == 248) i = 255;                   // 255/8 = 31 steps and rest 7 
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
@@ -412,10 +437,13 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
     DelayTime(16);
   } 
   
-  ClearNixieTube();   
+  ClearNixieTube();
+  DelayTime(200);   
 }
 
 // PWM fade in/out effect
+// To modify the effect, you need to change the number of PWM loop steps "i = i - steps" 
+// and/or the value (16, 32, 48) of "DelayTime(value);"
 void ShowSymbol(uint16_t digit, uint32_t backlight_color)
 {        
   uint16_t currentDigit;
@@ -425,10 +453,10 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
    
   ShiftOutData(currentDigit);
     
-  // fade in from min to max in decrements of 5 points
-  for (int i = 255 ; i >= 0; i = i - 10) 
+  // fade in from min to max in decrements of 8 points
+  for (int i = 255 ; i >= 0; i = i - 8) 
   {
-    if(i == 5) i = 0;                       // 255/10 = 25 steps and rest 5  
+    if(i == 7) i = 0;                       // 255/8 = 31 steps and rest 7  
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
@@ -438,12 +466,12 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     DelayTime(16);
   }  
 
-  DelayTime(500);
+  DelayTime(400);
 
-  // fade out from max to min in increments of 5 points
-  for (int i = 0 ; i <= 255; i = i + 10) 
+  // fade out from max to min in increments of 8 points
+  for (int i = 0 ; i <= 255; i = i + 8) 
   {
-    if(i == 250) i = 255;                   // 255/10 = 25 steps and rest 5 
+    if(i == 248) i = 255;                   // 255/8 = 31 steps and rest 7 
     analogWrite(PWM_PIN, i);
     led.setBrightness(255 - i);             // Set brightness
     led.fill(backlight_color);              // Fill all LEDs with a color
@@ -453,7 +481,8 @@ void ShowSymbol(uint16_t digit, uint32_t backlight_color)
     DelayTime(16);
   } 
   
-  ClearNixieTube();   
+  ClearNixieTube();  
+  DelayTime(200); 
 }
 
 // Turn off nixie tube
