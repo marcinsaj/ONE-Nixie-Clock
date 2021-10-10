@@ -29,7 +29,7 @@
 RTC_DS3231 rtc;
 
 // Choose Time Format *******************************************************
-#define hourFormat    12     // 12 Hour Clock or 24 Hour Clock
+#define hourFormat        12    // 12 Hour Clock or 24 Hour Clock
 // **************************************************************************
 
 // Set fade in/out effect delay *********************************************
