@@ -32,13 +32,14 @@ RTC_DS3231 rtc;
 #define hourFormat        12     // 12 Hour Clock or 24 Hour Clock
 // **************************************************************************
 
-// Cathode poisoning prevention settings*************************************
-// How often to run the cathode poisoning prevention routine
-#define howOftenRoutine   1     // 0 - none, 1 - everytime, 2... and so on
-// **************************************************************************
-
 // Set fade in/out effect delay *********************************************
 #define fadeDelay         8     // Best effect in range 5 - 16 milliseconds
+// **************************************************************************
+
+// Cathode poisoning prevention settings*************************************
+// How often to run the cathode poisoning prevention routine
+#define howOftenRoutine   1     // 0 - none, 1 - everytime, 
+                                // 2 - every second time and so on
 // **************************************************************************
 
 // NeoPixels LEDs pin
