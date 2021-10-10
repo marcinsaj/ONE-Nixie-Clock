@@ -34,8 +34,8 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 // NEO_KHZ800  800 KHz bitstream for WS2812 LEDs
 // NEO_GRB     Pixels are wired for GRB bitstream
 
-// Blue backlight color
-uint32_t backlight = led.Color(0, 0, 255);
+// Backlight color
+uint32_t backlight = led.Color(0, 0, 255);  // Blue
 
 // Shift registers control pins
 #define DIN_PIN     A0
@@ -135,11 +135,11 @@ void setup()
 
   led.fill(backlight);                    // Fill all LEDs with a color
   led.show();                             // Update LEDs
- 
+
   delay(1000);
- 
+  
   pinMode(EN_NPS_PIN, OUTPUT);
-  digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
+  digitalWrite(EN_NPS_PIN, LOW);          // Turn ON nixie power supply module  
 
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
@@ -151,9 +151,7 @@ void setup()
   digitalWrite(DIN_PIN, LOW);
 
   pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
-    
-  digitalWrite(EN_NPS_PIN, LOW);          // Turn ON nixie power supply module       
+  digitalWrite(LED_PIN, LOW);    
 }
 
 void loop() 
