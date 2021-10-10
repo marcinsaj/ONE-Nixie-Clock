@@ -1,7 +1,7 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Classic Nixie Clock with PWM fade in/out effect
+// Classic Nixie Clock with PWM fade in/out effect + multisegment tubes transition effect
 // This example demonstrates how to set new time, display (time) digits or symbols 
 // fade in/out effect and fade in/out backlight color effect.
 //
@@ -28,13 +28,21 @@
 // RTC library declaration
 RTC_DS3231 rtc;
 
+// **************************************************************************
+// To modify the fade in/out effect,
+// you need to change the number of PWM loop steps (5-10) "i = i - steps" 
+// and/or the value (16, 32, 48) of "DelayTime(value); 
+// in ShowSymbol(); or/and ShowDigit();
+// **************************************************************************
+
 // Choose Time Format *******************************************************
-#define hourFormat    12     // 12 Hour Clock or 24 Hour Clock
+#define hourFormat        12    // 12 Hour Clock or 24 Hour Clock
 // **************************************************************************
 
 // Cathode poisoning prevention settings*************************************
 // How often to run the cathode poisoning prevention routine
-#define howOftenRoutine   1     // 0 - none, 1 - everytime, 2... and so on
+#define howOftenRoutine   1     // 0 - none, 1 - everytime, 
+                                // 2 - every second time and so on
 // **************************************************************************
 
 // NeoPixels LEDs pin
@@ -418,6 +426,8 @@ void NixieDisplay(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
 }
 
 // PWM fade in/out effect
+// To modify the effect, you need to change the number of PWM loop steps "i = i - steps" 
+// and/or the value (16, 32, 48) of "DelayTime(value);"
 void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
 {          
   for(int digits = 0 ; digits < 2; digits++)
@@ -425,10 +435,10 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
     if(digits == 0) ShiftOutData(digit_nixie_tube[digit_1]);
     else ShiftOutData(digit_nixie_tube[digit_2]);
 
-    // Fade-in from min to max 
-    for (int i = 255 ; i >= 0; i = i - 10) 
+    // fade in from min to max in decrements of 8 points
+    for (int i = 255 ; i >= 0; i = i - 8) 
     {
-      if(i == 5) i = 0;                      // 255/10 = 25 steps and rest 5
+      if(i == 7) i = 0;                       // 255/8 = 31 steps and rest 7  
       analogWrite(PWM_PIN, i);
       led.setBrightness(255 - i);             // Set brightness
       led.fill(backlight_color);              // Fill all LEDs with a color
@@ -438,12 +448,12 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
       DelayTime(16);
     }  
 
-    DelayTime(500);
+    DelayTime(400);
 
-    // Fade-out from max to min
-    for (int i = 0 ; i <= 255; i = i + 10) 
+    // fade out from max to min in increments of 8 points
+    for (int i = 0 ; i <= 255; i = i + 8) 
     {
-      if(i == 250) i = 255;                    // 255/10 = 25 steps and rest 5
+      if(i == 248) i = 255;                   // 255/8 = 31 steps and rest 7 
       analogWrite(PWM_PIN, i);
       led.setBrightness(255 - i);             // Set brightness
       led.fill(backlight_color);              // Fill all LEDs with a color
@@ -453,7 +463,8 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
       DelayTime(16);
     } 
     
-    ClearNixieTube();   
+    ClearNixieTube();
+    DelayTime(200);    
   }
 }
 
@@ -478,7 +489,7 @@ void ShowSymbol(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
     DelayTime(16);
   }  
 
-  DelayTime(1500);
+  DelayTime(800);
 
   for(int i = 0; i < 8; i++)
   {
@@ -509,7 +520,7 @@ void ShowSymbol(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
   }  
 
   ShiftOutData(originalDigit);
-  DelayTime(1500);
+  DelayTime(800);
 
   // fade out from max to min in increments of 5 points
   for (int i = 0 ; i <= 255; i = i + 10) 
