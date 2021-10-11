@@ -2,14 +2,6 @@
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
 // Nixie Counter Example with PWM fade in/out effect
-//
-// This example demonstrates how to display digits and symbols
-// Fade in/out effect for multisegment tubes has been turned off
-// because default Arduino Nano 33 IoT pwm frequency is too high 
-// and there is the undesirable effect of "singing tube" - audible noise
-// PWM option could be turned on by uncommenting two lines 
-// in ShowSymbol() function: "//analogWrite(PWM_PIN, i);" 
-//
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
 // Arduino Nano 33 IoT - https://store.arduino.cc/arduino-nano-33-iot
@@ -83,8 +75,22 @@ int analogDetectInput = 0;
 // | SOCKET 20A, 24A, 26A |
 //  ¯¯¯¯¯|¯¯¯¯¯¯¯¯¯¯|¯¯¯¯¯
 
-// Bit notation of 15-segment tube symbols                                  
-uint16_t symbol_nixie_tube[]={
+
+int16_t digit[]={
+    0b0000000000000001,   // 0 
+    0b0000000000000010,   // 1
+    0b0000000000000100,   // 2
+    0b0000000000001000,   // 3
+    0b0000000000010000,   // 4
+    0b0000000000100000,   // 5
+    0b0000000001000000,   // 6
+    0b0000000010000000,   // 7
+    0b0000000100000000,   // 8
+    0b0000001000000000    // 9    
+};
+
+
+uint16_t symbol[]={
   0b0011111110001000,   // 0 
   0b0000000000010001,   // 1
   0b0010100101001000,   // 2
@@ -122,29 +128,82 @@ uint16_t symbol_nixie_tube[]={
   0b0000000010001010,   // Y
   0b0000100110001000    // Z             
 };
+// Which pin on the Arduino is connected to the NeoPixels?
+#define LED_PIN     A3
 
-// Bit notation of 10-segment tube digits 
-uint16_t digit_nixie_tube[]={
-  0b0000000000000001,   // 0 
-  0b0000000000000010,   // 1
-  0b0000000000000100,   // 2
-  0b0000000000001000,   // 3
-  0b0000000000010000,   // 4
-  0b0000000000100000,   // 5
-  0b0000000001000000,   // 6
-  0b0000000010000000,   // 7
-  0b0000000100000000,   // 8
-  0b0000001000000000    // 9    
-};
- 
+// How many NeoPixels are attached to the Arduino?
+#define LED_COUNT  4
+
+#define EN_PIN      A1
+#define CLK_PIN     A2
+#define DIN_PIN     A0
+#define EN_NPS_PIN  13
+// #define PWM_PIN     10  // Declared as PA21, find below in code
+
+// PWM frequency can be calculated by
+// freq = GCLK4_freq / (TCC0_prescaler * (1 + period))
+// With value 100, we get a 75Hz
+uint32_t period = 100 - 1;
+
 void setup() 
 {  
-  led.begin();                            // Initialize NeoPixel led object
-  led.show();                             // Turn OFF all pixels ASAP
-  led.setBrightness(255);                 // Set brightness 0-255  
+// Enable and configure generic clock generator 4
+  GCLK->GENCTRL.reg = GCLK_GENCTRL_IDC |          // Improve duty cycle
+                      GCLK_GENCTRL_GENEN |        // Enable generic clock gen
+                      GCLK_GENCTRL_SRC_DFLL48M |  // Select 48MHz as source
+                      GCLK_GENCTRL_ID(4);         // Select GCLK4
+  while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
+
+  // Set clock divider of 25 to generic clock generator 4
+  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(25) |        // Divide 48 MHz by 25
+                     GCLK_GENDIV_ID(4);           // Apply to GCLK4 4
+  while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
   
+  // Enable GCLK4 and connect it to TCC0 and TCC1
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN |        // Enable generic clock
+                      GCLK_CLKCTRL_GEN_GCLK4 |    // Select GCLK4
+                      GCLK_CLKCTRL_ID_TCC0_TCC1;  // Feed GCLK4 to TCC0/1
+  while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
+
+  // Divide counter by 256
+  TCC0->CTRLA.reg |= TCC_CTRLA_PRESCALER(TCC_CTRLA_PRESCALER_DIV256_Val);
+  while (TCC0->SYNCBUSY.bit.WAVE);                // Wait for synchronization
+
+  // Use "Normal PWM" (single-slope PWM): count up to PER, match on CC[n]
+  TCC0->WAVE.reg = TCC_WAVE_WAVEGEN_NPWM;         // Select NPWM as waveform
+  while (TCC0->SYNCBUSY.bit.WAVE);                // Wait for synchronization
+
+  // Set the period (the number to count to (TOP) before resetting timer)
+  TCC0->PER.reg = period;
+  while (TCC0->SYNCBUSY.bit.PER);
+
+  // Set PWM signal to output
+  TCC0->CC[3].reg = period / 1;
+  while (TCC0->SYNCBUSY.bit.CC2);
+
+  // Configure PA21 (D10 on Arduino Nano 33 IoT) to be output
+  PORT->Group[PORTA].DIRSET.reg = PORT_PA21;      // Set pin as output
+  PORT->Group[PORTA].OUTCLR.reg = PORT_PA21;      // Set pin to low
+
+  // Enable the port multiplexer for PA21
+  PORT->Group[PORTA].PINCFG[21].reg |= PORT_PINCFG_PMUXEN;
+
+  // Connect TCC0 timer to PA21. Function F is TCC0/WO[2] for PA21.
+  // Odd pin num (2*n + 1): use PMUXO
+  // Even pin num (2*n): use PMUXE
+  PORT->Group[PORTA].PMUX[10].reg = PORT_PMUX_PMUXO_F;
+
+  // Enable output (start PWM)
+  TCC0->CTRLA.reg |= (TCC_CTRLA_ENABLE);
+  while (TCC0->SYNCBUSY.bit.ENABLE);              // Wait for synchronization
+
+
+  led.begin();                                    // Initialize NeoPixel led object
+  led.show();                                     // Turn OFF all pixels ASAP
+  led.setBrightness(255);                         // Set brightness 0-255  
+ 
   pinMode(EN_NPS_PIN, OUTPUT);
-  digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
+  digitalWrite(EN_NPS_PIN, HIGH);                 // Turn OFF nixie power supply module 
 
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
@@ -157,10 +216,8 @@ void setup()
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);  
-
-  pinMode(PWM_PIN, OUTPUT);
       
-  digitalWrite(EN_NPS_PIN, LOW);          // Turn ON nixie power supply module       
+  digitalWrite(EN_NPS_PIN, LOW);                  // Turn ON nixie power supply module      
 }
 
 void loop() 
@@ -179,100 +236,108 @@ bool DetectNixieTube()
   else return(false);  
 }
 
+void StartPWM()
+{
+  TCC0->CTRLBSET.reg = TCC_CTRLBCLR_CMD_RETRIGGER;    // Restart the timer
+  while(TCC0->SYNCBUSY.bit.CTRLB);                    // Wait for synchronization
+}
+
+void StopPWM ()
+{
+  TCC0->CTRLBSET.reg = TCC_CTRLBCLR_CMD_STOP;         // Stop the timer
+  while(TCC0->SYNCBUSY.bit.CTRLB);                    // Wait for synchronization
+}
+
 void NixieDisplay()
 {
   if(DetectNixieTube() == true) ShowSymbol();
   else ShowDigit();
 }
 
-// PWM fade in/out effect
-void ShowDigit()
-{       
-  for(int digit = 0; digit <= 9; digit++)
-  {
-    ShiftOutData(digit_nixie_tube[digit]);
-    
-    // Fade-in from min to max 
-    for (int i = 255 ; i >= 0; i = i -5) 
-    {
-      analogWrite(PWM_PIN, i);
-      led.setBrightness(255 - i);             // Set brightness
-      led.fill(backlight);                    // Fill all LEDs with a color
-      led.show();                             // Update LEDs
-      
-      // wait for 10 milliseconds to see the fade in effect
-      delay(10);
-    }  
-
-    delay(500);
-
-    // Fade-out from max to min
-    for (int i = 0 ; i <= 255; i = i +5) 
-    {
-      analogWrite(PWM_PIN, i);
-      led.setBrightness(255 - i);             // Set brightness
-      led.fill(backlight);                    // Fill all LEDs with a color
-      led.show();                             // Update LEDs
-
-      // wait for 10 milliseconds to see the fade out effect
-      delay(10);
-    } 
-  
-    ClearNixieTube();   
-  }
-}
-
-// Fade in/out effect for multisegment tubes has been turned off
-// because default arduino pwm frequency is too high 
-// and there is the undesirable effect of "singing tube" - audible noise
-// PWM option could be turned on by uncommenting two lines 
-// in ShowSymbol() function: "//analogWrite(PWM_PIN, i);" 
-void ShowSymbol()
-{       
-  for(int symbol = 0; symbol < 36; symbol++)
-  {
-    ShiftOutData(symbol_nixie_tube[symbol]);
-    
-    // fade in from min to max in decrements of 5 points
-    for (int i = 255 ; i >= 0; i = i -5) 
-    {
-      // analogWrite(PWM_PIN, i);
-      led.setBrightness(255 - i);             // Set brightness
-      led.fill(backlight);                    // Fill all LEDs with a color
-      led.show();                             // Update LEDs
-      
-      // wait for 10 milliseconds to see the fade in effect
-      delay(10);
-    }  
-
-    delay(500);
-
-    // fade out from max to min in increments of 5 points
-    for (int i = 0 ; i <= 255; i = i +5) 
-    {
-      // analogWrite(PWM_PIN, i);
-      led.setBrightness(255 - i);             // Set brightness
-      led.fill(backlight);                    // Fill all LEDs with a color
-      led.show();                             // Update LEDs
-
-      // wait for 10 milliseconds to see the fade out effect
-      delay(10);
-    } 
-  
-    ClearNixieTube();   
-  }
-}
-
-// Turn off nixie tube
-void ClearNixieTube()
+void ShowDigit() 
 {
-  ShiftOutData(0);  
+  for(int count = 0; count <= 9; count ++)
+  {
+    StartPWM();
+    delay(200);
+
+    ShiftOutData(digit[count]);
+          
+    for(int i = 100; i > 0; i = i - 2)
+    { 
+      TCC0->CC[3].reg = i;
+      while (TCC0->SYNCBUSY.bit.CC2);
+
+      StopPWM();
+
+      led.setBrightness(255 - (i *2.55));     // Set brightness 0 - 255
+      led.fill(backlight);                    // Fill all LEDs with a color
+      led.show();                             // Update LEDs
+      
+      StartPWM();
+      delay(10);
+    }
+
+    delay(300);
+
+    for(int i = 0; i <= 100 ; i = i + 2)
+    { 
+      TCC0->CC[3].reg = i;
+      while (TCC0->SYNCBUSY.bit.CC2);
+
+      led.setBrightness(255 - (i *2.55));     // Set brightness 255 - 0
+      led.fill(backlight);                    // Fill all LEDs with a color
+      led.show();                             // Update LEDs
+
+      delay(15);
+    }              
+  }        
+}
+
+void ShowSymbol() 
+{
+  for(int count = 0; count <= 36; count ++)
+  {
+    StartPWM();
+    delay(200);
+
+    ShiftOutData(symbol[count]);
+          
+    for(int i = 100; i > 0; i = i - 2)
+    { 
+      TCC0->CC[3].reg = i;
+      while (TCC0->SYNCBUSY.bit.CC2);
+
+      StopPWM();
+
+      led.setBrightness(255 - (i *2.55));     // Set brightness 0 - 255
+      led.fill(backlight);                    // Fill all LEDs with a color
+      led.show();                             // Update LEDs
+      
+      StartPWM();
+      delay(10);
+    }
+
+    delay(300);
+
+    for(int i = 0; i <= 100 ; i = i + 2)
+    { 
+      TCC0->CC[3].reg = i;
+      while (TCC0->SYNCBUSY.bit.CC2);
+
+      led.setBrightness(255 - (i *2.55));     // Set brightness 255 - 0
+      led.fill(backlight);                    // Fill all LEDs with a color
+      led.show();                             // Update LEDs
+
+      delay(15);
+    }              
+  }        
 }
 
 void ShiftOutData(uint16_t character)
 { 
-  uint8_t first_half = character >> 8;  
-  uint8_t second_half = character;     
+  uint8_t second_half = character;
+  uint8_t first_half = character >> 8;       
   digitalWrite(EN_PIN, LOW);
   shiftOut(DIN_PIN, CLK_PIN, MSBFIRST, first_half);
   shiftOut(DIN_PIN, CLK_PIN, MSBFIRST, second_half);
