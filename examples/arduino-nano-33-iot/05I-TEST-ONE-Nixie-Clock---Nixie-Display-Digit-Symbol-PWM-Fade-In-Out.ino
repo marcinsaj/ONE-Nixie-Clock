@@ -37,15 +37,15 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t backlight = led.Color(0, 0, 255);
 
 // Shift registers control pins
-#define DIN_PIN     A0
-#define EN_PIN      A1
-#define CLK_PIN     A2
+#define DIN_PIN       A0
+#define EN_PIN        A1
+#define CLK_PIN       A2
 
 // Nixie Power Supply Module control pin
-#define EN_NPS_PIN  13 
+#define EN_NPS_PIN    13 
 
-// PWM pin for nixie tube fade effect
-#define PWM_PIN     10
+// Declared as PA21, find below in code
+// #define PWM_PIN    10
 
 // The clock has a built-in detection mechanism 
 // for 15 segment nixie tubes (e.g. B-7971, B-8971)
@@ -128,17 +128,6 @@ uint16_t symbol[]={
   0b0000000010001010,   // Y
   0b0000100110001000    // Z             
 };
-// Which pin on the Arduino is connected to the NeoPixels?
-#define LED_PIN     A3
-
-// How many NeoPixels are attached to the Arduino?
-#define LED_COUNT  4
-
-#define EN_PIN      A1
-#define CLK_PIN     A2
-#define DIN_PIN     A0
-#define EN_NPS_PIN  13
-// #define PWM_PIN     10  // Declared as PA21, find below in code
 
 // PWM frequency can be calculated by
 // freq = GCLK4_freq / (TCC0_prescaler * (1 + period))
