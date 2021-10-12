@@ -1,7 +1,7 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Test Example - Classic Nixie Clock with PWM fade in/out effect
+// Classic Nixie Clock with PWM fade in/out effect - Default
 // Arduino Nano 33 IoT PWM default frequency value is too high 
 // and "singing tube" audible noise may occur.
 //
@@ -178,10 +178,11 @@ void setup()
   pinMode(PWM_PIN, OUTPUT);
   digitalWrite(PWM_PIN, LOW);  
       
-  Serial.println("#############################################################");
-  Serial.println("------------- Test Example - Classic Nixie Clock ------------");
-  Serial.println("---------------- If you want to set new Time ----------------");
-  Serial.println("--------------- press ENTER within 10 seconds ---------------");
+  Serial.println("##############################################################");
+  Serial.println("------------ Test Example - Classic Nixie Clock --------------");
+  Serial.println("---------------- If you want to set new Time -----------------");
+  Serial.println("----------- press ENTER for Arduino IDE up to 1.8 ------------"); 
+  Serial.println("----------- press CTRL+ENTER for Arduino IDE 2.0 -------------");
 
   // Millis time start
   unsigned long millis_time_now = millis();
@@ -239,7 +240,9 @@ void SetNewTime()
 {  
   Serial.println("--------------- Enter the TIME without spaces ----------------");
   Serial.println("--------------- in the HHMM format e.g. 0923 -----------------");
-  Serial.println("- and press enter when you are ready to send data to the RTC -");
+  Serial.println("------- and when you are ready to send data to the RTC -------");
+  Serial.println("------------ press ENTER for Arduino IDE up to 1.8 -----------"); 
+  Serial.println("------------ press CTRL+ENTER for Arduino IDE 2.0 ------------"); 
   Serial.println('\n');
 
   // Clear serial buffer
