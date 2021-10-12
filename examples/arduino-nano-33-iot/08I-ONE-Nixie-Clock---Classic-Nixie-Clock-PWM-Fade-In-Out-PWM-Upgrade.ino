@@ -208,7 +208,7 @@ uint8_t brightnessTable[50]={
 
 // PWM frequency can be calculated by
 // freq = GCLK4_freq / (TCC0_prescaler * (1 + period))
-// With value 100, we get a 75Hz
+// With value 100, we get a 78Hz
 uint32_t period = 100 - 1;
 
 void setup() 
@@ -221,7 +221,7 @@ void setup()
   while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
 
   // Set clock divider of 25 to generic clock generator 4
-  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(25) |        // Divide 48 MHz by 25
+  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(24) |        // Divide 48 MHz by 25
                      GCLK_GENDIV_ID(4);           // Apply to GCLK4 4
   while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
   
