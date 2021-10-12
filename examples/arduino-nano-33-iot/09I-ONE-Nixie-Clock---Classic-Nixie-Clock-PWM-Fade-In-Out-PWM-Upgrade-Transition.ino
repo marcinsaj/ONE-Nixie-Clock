@@ -3,7 +3,7 @@
 //
 // Classic Nixie Clock with PWM fade in/out effect Upgrade 
 // + multisegment tubes transition effect
-// This example demonstrates how to set 78Hz PWM frequency 
+// This example demonstrates how to set PWM frequency 
 // and how to set new time, display (time) digits or symbols 
 // fade in/out effect and fade in/out backlight color effect.
 //
@@ -42,6 +42,13 @@ RTC_DS3231 rtc;
 // How often to run the cathode poisoning prevention routine
 #define howOftenRoutine   1     // 0 - none, 1 - everytime, 
                                 // 2 - every second time and so on
+// **************************************************************************
+
+// Set PWM frequency ********************************************************
+// PWM frequency can be calculated by
+// Freq = 48MHz CPU / (TCC0_prescaler 256 * (1 + period 99) * pwm divider)
+uint32_t period = 100 - 1;      // Do not change it!
+#define PWM_Divider       15    // 24 - 78Hz, 15 - 125Hz, 10 - 188Hz 
 // **************************************************************************
 
 // NeoPixels LEDs pin
@@ -229,11 +236,6 @@ uint8_t brightnessTable[50]={
   241, 243, 245, 247, 249, 251, 252, 253, 254, 255
 };
 
-// PWM frequency can be calculated by
-// freq = GCLK4_freq / (TCC0_prescaler * (1 + period))
-// With value 100, we get a 78Hz
-uint32_t period = 100 - 1;
-
 void setup() 
 { 
   pinMode(EN_NPS_PIN, OUTPUT);
@@ -252,22 +254,22 @@ void setup()
   digitalWrite(LED_PIN, LOW);     
 
 // Enable and configure generic clock generator 4
-  GCLK->GENCTRL.reg = GCLK_GENCTRL_IDC |          // Improve duty cycle
-                      GCLK_GENCTRL_GENEN |        // Enable generic clock gen
-                      GCLK_GENCTRL_SRC_DFLL48M |  // Select 48MHz as source
-                      GCLK_GENCTRL_ID(4);         // Select GCLK4
-  while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
+  GCLK->GENCTRL.reg = GCLK_GENCTRL_IDC |            // Improve duty cycle
+                      GCLK_GENCTRL_GENEN |          // Enable generic clock gen
+                      GCLK_GENCTRL_SRC_DFLL48M |    // Select 48MHz as source
+                      GCLK_GENCTRL_ID(4);           // Select GCLK4
+  while (GCLK->STATUS.bit.SYNCBUSY);                // Wait for synchronization
 
-  // Set clock divider of 25 to generic clock generator 4
-  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(24) |        // Divide 48 MHz by 25
-                     GCLK_GENDIV_ID(4);           // Apply to GCLK4 4
-  while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
+  // Set clock divider to generic clock generator 4
+  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(PWM_Divider) | // Divide 48 MHz
+                     GCLK_GENDIV_ID(4);             // Apply to GCLK4 4
+  while (GCLK->STATUS.bit.SYNCBUSY);                // Wait for synchronization
   
   // Enable GCLK4 and connect it to TCC0 and TCC1
-  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN |        // Enable generic clock
-                      GCLK_CLKCTRL_GEN_GCLK4 |    // Select GCLK4
-                      GCLK_CLKCTRL_ID_TCC0_TCC1;  // Feed GCLK4 to TCC0/1
-  while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN |          // Enable generic clock
+                      GCLK_CLKCTRL_GEN_GCLK4 |      // Select GCLK4
+                      GCLK_CLKCTRL_ID_TCC0_TCC1;    // Feed GCLK4 to TCC0/1
+  while (GCLK->STATUS.bit.SYNCBUSY);                // Wait for synchronization
 
   // Divide counter by 256
   TCC0->CTRLA.reg |= TCC_CTRLA_PRESCALER(TCC_CTRLA_PRESCALER_DIV256_Val);
