@@ -34,7 +34,7 @@ RTC_DS3231 rtc;
 // **************************************************************************
 
 // Set fade in/out effect delay *********************************************
-#define fadeDelay         10     // Best effect in range 8 - 16 milliseconds
+#define fadeDelay         12     // Best effect in range 5 - 20 milliseconds
 // **************************************************************************
 
 // Cathode poisoning prevention settings*************************************
@@ -287,10 +287,10 @@ void setup()
       
   digitalWrite(EN_NPS_PIN, LOW);                  // Turn ON nixie power supply module      
 
-  delay(500);
+  delay(5000);
 
   Serial.println("##############################################################");
-  Serial.println("------------ Test Example - Classic Nixie Clock --------------");
+  Serial.println("---------------------Classic Nixie Clock ---------------------");
   Serial.println("---------------- If you want to set new Time -----------------");
   Serial.println("----------- press ENTER for Arduino IDE up to 1.8 ------------"); 
   Serial.println("----------- press CTRL+ENTER for Arduino IDE 2.0 -------------"); 
@@ -300,7 +300,7 @@ void setup()
   unsigned long millis_time_now_2 = millis();
     
   // Wait 10 seconds
-  while((millis() < millis_time_now + 100))
+  while((millis() < millis_time_now + 10000))
   {         
     if (millis() - millis_time_now_2 > 160)
     {
