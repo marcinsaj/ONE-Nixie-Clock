@@ -43,6 +43,13 @@ RTC_DS3231 rtc;
                                 // 2 - every second time and so on
 // **************************************************************************
 
+// Set PWM frequency ********************************************************
+// PWM frequency can be calculated by
+// Freq = 48MHz CPU / (TCC0_prescaler 256 * (1 + period 99) * pwm divider)
+uint32_t period = 100 - 1;      // Do not change the period!
+#define PWM_Divider       15    // 24 - 78Hz, 15 - 125Hz, 10 - 188Hz 
+// **************************************************************************
+
 // NeoPixels LEDs pin
 #define LED_PIN       A3
 
@@ -206,11 +213,6 @@ uint8_t brightnessTable[50]={
   241, 243, 245, 247, 249, 251, 252, 253, 254, 255
 };
 
-// PWM frequency can be calculated by
-// freq = GCLK4_freq / (TCC0_prescaler * (1 + period))
-// With value 100, we get a 78Hz
-uint32_t period = 100 - 1;
-
 void setup() 
 {  
 // Enable and configure generic clock generator 4
@@ -220,10 +222,10 @@ void setup()
                       GCLK_GENCTRL_ID(4);         // Select GCLK4
   while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
 
-  // Set clock divider of 25 to generic clock generator 4
-  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(24) |        // Divide 48 MHz by 25
-                     GCLK_GENDIV_ID(4);           // Apply to GCLK4 4
-  while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
+  // Set clock divider to generic clock generator 4
+  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(PWM_Divider) | // Divide 48 MHz
+                     GCLK_GENDIV_ID(4);             // Apply to GCLK4 4
+  while (GCLK->STATUS.bit.SYNCBUSY);                // Wait for synchronization
   
   // Enable GCLK4 and connect it to TCC0 and TCC1
   GCLK->CLKCTRL.reg = GCLK_CLKCTRL_CLKEN |        // Enable generic clock
@@ -463,8 +465,7 @@ void NixieDisplay(uint16_t digit, uint32_t backlight_color)
 
 
 void SetLedBrightness(uint16_t baseBrightness, uint32_t backlight_color)
-{ 
-  
+{  
   if (baseBrightness > 0) baseBrightness = (baseBrightness / 2) - 1;
 
   led.setBrightness(255-brightnessTable[baseBrightness]);     // Set brightness 0 - 255   
@@ -494,7 +495,6 @@ void ShowDigit(uint16_t digit, uint32_t backlight_color)
   }     
 
   ClearNixieTube();  
-  //delay(100);
 }
 
 // PWM fade in/out effect
