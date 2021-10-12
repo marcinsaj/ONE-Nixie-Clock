@@ -3,7 +3,7 @@
 //
 // Classic Nixie Clock with PWM fade in/out effect Upgrade 
 // + multisegment tubes transition effect
-// This example demonstrates how to set 75Hz PWM frequency 
+// This example demonstrates how to set 78Hz PWM frequency 
 // and how to set new time, display (time) digits or symbols 
 // fade in/out effect and fade in/out backlight color effect.
 //
@@ -231,7 +231,7 @@ uint8_t brightnessTable[50]={
 
 // PWM frequency can be calculated by
 // freq = GCLK4_freq / (TCC0_prescaler * (1 + period))
-// With value 100, we get a 75Hz
+// With value 100, we get a 78Hz
 uint32_t period = 100 - 1;
 
 void setup() 
@@ -259,7 +259,7 @@ void setup()
   while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
 
   // Set clock divider of 25 to generic clock generator 4
-  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(25) |        // Divide 48 MHz by 25
+  GCLK->GENDIV.reg = GCLK_GENDIV_DIV(24) |        // Divide 48 MHz by 25
                      GCLK_GENDIV_ID(4);           // Apply to GCLK4 4
   while (GCLK->STATUS.bit.SYNCBUSY);              // Wait for synchronization
   
