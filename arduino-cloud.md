@@ -1,5 +1,5 @@
-<a target="_blank" href="https://create.arduino.cc/iot/">Create Arduino Cloud Account</a>
-<a target="_blank" href="https://create.arduino.cc/iot/things">Create Thing</a>
+- <a target="_blank" href="https://create.arduino.cc/iot/">Create Arduino Cloud Account</a>
+- <a target="_blank" href="https://create.arduino.cc/iot/things">Create Thing</a>
 
 
 
