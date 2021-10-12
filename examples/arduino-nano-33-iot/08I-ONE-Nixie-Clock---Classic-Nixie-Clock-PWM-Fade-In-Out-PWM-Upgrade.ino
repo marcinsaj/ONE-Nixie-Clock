@@ -197,7 +197,7 @@ uint16_t digit_nixie_tube[]={
   0b0000001000000000    // 9    
 };
 
-// LEDs brightness matching values for nixie fade in out effect
+// LEDs brightness matching values with nixie fade in out effect
 uint8_t brightnessTable[50]={
     0,  10,  20,  30,  40,  50,  60,  70,  90,  90, 
   100, 110, 120, 110, 120, 126, 132, 138, 146, 152, 
