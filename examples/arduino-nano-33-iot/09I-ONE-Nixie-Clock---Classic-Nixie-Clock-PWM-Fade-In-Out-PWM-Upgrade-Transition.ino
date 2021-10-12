@@ -47,7 +47,7 @@ RTC_DS3231 rtc;
 // Set PWM frequency ********************************************************
 // PWM frequency can be calculated by
 // Freq = 48MHz CPU / (TCC0_prescaler 256 * (1 + period 99) * pwm divider)
-uint32_t period = 100 - 1;      // Do not change it!
+uint32_t period = 100 - 1;      // Do not change the period!
 #define PWM_Divider       15    // 24 - 78Hz, 15 - 125Hz, 10 - 188Hz 
 // **************************************************************************
 
