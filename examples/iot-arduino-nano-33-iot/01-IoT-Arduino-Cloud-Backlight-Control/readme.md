@@ -8,7 +8,8 @@
 
 <br/>
 ** If you use Arduino IDE offline software then you should use these files: **
-- IoT-ONC-Backlight-Control.ino
+
+-  IoT-ONC-Backlight-Control.ino
 - arduino-secrets.h
 - thingProperties.h
 
