@@ -11,4 +11,4 @@ open "arduino-secrets.h" and "thingProperties.h" and edit the required informati
 
 - #define SECRET_SSID "type here your wifi network name"
 - #define SECRET_PASS "type here your wifi password"
-- const char THING_ID[] = "place-here-id-number-of-your-thing";
+- const char THING_ID[] = "place-here-id-number-of-your-thing-from-iot-arduino-cloud";
