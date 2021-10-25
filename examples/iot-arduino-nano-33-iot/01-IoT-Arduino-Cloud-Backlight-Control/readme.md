@@ -13,8 +13,7 @@
 - thingProperties.h
 
 <br/>
-**Copy all files into one folder "IoT-ONC-Backlight-Control"** <br> 
-**open "arduino-secrets.h" and "thingProperties.h" and edit the required informations:**
+**Copy all files into one folder "IoT-ONC-Backlight-Control" open "arduino-secrets.h" and "thingProperties.h" and edit the required informations:**
 
 - #define SECRET_SSID "type here your wifi network name"
 - #define SECRET_PASS "type here your wifi password"
