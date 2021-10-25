@@ -4,7 +4,6 @@ ONC IoT Step by Step Datasheet
 
 If you decide to use the Arduino Cloud Code Editor then you should use only this sketch: 
 IoT-ONC-Backlight-Control.ino 
-
 If you use Arduino IDE offline software then you should use these files: 
 - IoT-ONC-Backlight-Control.ino
 - arduino-secrets.h
