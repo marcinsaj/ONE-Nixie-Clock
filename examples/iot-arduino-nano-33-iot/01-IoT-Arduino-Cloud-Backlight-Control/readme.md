@@ -1,4 +1,4 @@
-#ONC IoT Step by Step Datasheet
+# ONC IoT Step by Step Datasheet
 - How to Connect ONC to the Arduino IoT Cloud
 - How to Control ONC Backlight - ON/OFF
 
