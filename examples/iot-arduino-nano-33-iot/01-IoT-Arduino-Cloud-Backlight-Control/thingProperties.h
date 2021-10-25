@@ -8,7 +8,7 @@
 #include <Arduino_ConnectionHandler.h>
 
 // **********************************************************
-const char THING_ID[] = "add-here-your-thing-id-from-iot-cloud";
+const char THING_ID[] = "place-here-id-number-of-your-thing";
 // **********************************************************
 
 const char SSID[]     = SECRET_SSID;    // Network SSID (name)
