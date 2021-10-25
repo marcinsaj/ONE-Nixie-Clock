@@ -9,6 +9,6 @@ IoT-ONC-Backlight-Control.ino
 Copy all files into one folder "IoT-ONC-Backlight-Control" 
 open "arduino-secrets.h" and "thingProperties.h" edit the required informations:
 
-#define SECRET_SSID "type here your wifi network name"
-#define SECRET_PASS "type here your wifi password"
-const char THING_ID[] = "place-here-id-number-of-your-thing";
+- #define SECRET_SSID "type here your wifi network name"
+- #define SECRET_PASS "type here your wifi password"
+- const char THING_ID[] = "place-here-id-number-of-your-thing";
