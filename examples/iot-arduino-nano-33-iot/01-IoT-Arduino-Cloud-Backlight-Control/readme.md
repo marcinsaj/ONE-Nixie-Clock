@@ -1,6 +1,12 @@
 # ONC IoT Step by Step Datasheet
 - How to Connect ONC to the Arduino IoT Cloud
-- How to Control ONC Backlight - ON/OFF
+- How to Control IoT ONC Backlight - ON/OFF
+- How to Control IoT ONC Backlight - ON/OFF & Color
+- How to Control IoT ONC Backlight - ON/OFF & Color & Brightness - 3 Different Widgets
+- How to Control IoT ONC Backlight - ON/OFF & Color & Brightness - Only 1 Widget for all
+- How to Control IoT ONC Backlight & Nixie Tube
+- How to Control IoT ONC Backlight & Nixie Tube Display
+- IoT ONE Nixie Clock & Arduino Cloud
 <br/>
 
 If you decide to use the Arduino Cloud Code Editor then you should use only this sketch: <br/>
