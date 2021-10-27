@@ -60,7 +60,6 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 // NEO_GRB     Pixels are wired for GRB bitstream
 
 uint32_t current_Backlight_Color = led.Color(0, 0, 0);
-bool backlight_Status = false;
 
 void setup() 
 { 
