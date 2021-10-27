@@ -62,6 +62,9 @@ uint32_t blue_color = led.Color(0, 0, 255);
 uint32_t white_color = led.Color(255, 255, 255);
 uint32_t magenta_color = led.Color(255, 0, 255);
 
+// Choose your backlight color
+uint32_t backlight_color = magenta_color;
+
 void setup() 
 { 
   // Initialize serial and wait for port to open:
@@ -103,7 +106,7 @@ void onBacklightChange()
   
   if (backlight) 
   {
-    led.fill(magenta_color);                // Fill all LEDs with a color
+    led.fill(backlight_color);                // Fill all LEDs with a color
     Serial.println("ON");
   } else 
   {
