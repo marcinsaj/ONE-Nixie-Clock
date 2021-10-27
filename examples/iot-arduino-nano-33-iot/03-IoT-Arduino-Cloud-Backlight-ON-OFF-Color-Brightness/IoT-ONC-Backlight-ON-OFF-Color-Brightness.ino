@@ -23,8 +23,8 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Basic example of led backlight control - on/off & color - from desktop Arduino IoT Cloud Dashboard 
-// or Arduino IoT Cloud Remote App:
+// Basic example of led backlight control - on/off & color & brightness - 
+// from desktop Arduino IoT Cloud Dashboard or Arduino IoT Cloud Remote App:
 // Android - https://bit.ly/arduino-android-app
 // IOS - https://bit.ly/arduino-ios-app
 // 
@@ -63,6 +63,7 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 uint32_t current_Backlight_Color = led.Color(0, 0, 0);
 bool backlight_Status = false;
+uint16_t = current_Brightness = 255;
 
 void setup() 
 { 
@@ -87,8 +88,11 @@ void setup()
   ArduinoCloud.printDebugInfo();  
   
   led.begin();                            // Initialize NeoPixel led object
-  led.show();                             // Turn OFF all pixels ASAP
-  led.setBrightness(255);                 // Set brightness 0-255
+  led.show();                             // Turn OFF all pixels
+  
+  // Update current brightness value from the Cloud variable 
+  current_Brightness = brightness;
+  led.setBrightness(current_Brightness);
   led.clear();
 }
 
@@ -115,8 +119,7 @@ void getBacklightColor()
   current_Backlight_Color = led.Color(RValue, GValue, BValue);
 }
 
-//  Since Backlight is READ_WRITE variable, onBacklightChange() is
-//  executed every time a new value is received from IoT Cloud.
+// Executed every time a new value of backlight true/false is received from IoT Cloud
 void onBacklightChange()  
 {
   Serial.print("The Backlight is ");
@@ -124,6 +127,7 @@ void onBacklightChange()
   if (backlight) 
   {
     backlight_Status = true;
+    led.setBrightness(current_Brightness);
     led.fill(current_Backlight_Color);                // Fill all LEDs with a color
     Serial.println("ON");
   } else 
@@ -137,27 +141,27 @@ void onBacklightChange()
   delay(100); 
 }
 
-// Since BacklightColor is READ_WRITE variable, onBacklightColorChange() is
-// executed every time a new value is received from IoT Cloud.
+// Executed every time a new value of color is received from IoT Cloud
 void onColorChange()  
 {
   if(backlight_Status == true)
   {
+    led.setBrightness(current_Brightness);
     led.fill(current_Backlight_Color);                // Fill all LEDs with a color
     led.show();
     delay(100);
   }
 }
 
-
-// Since Brightness is READ_WRITE variable, onBrightnessChange() is
-// executed every time a new value is received from IoT Cloud.
+// Executed every time a new value of brightness is received from IoT Cloud
 void onBrightnessChange()  
 {
+  current_Brightness = brightness;
+  
   if(backlight_Status == true)
   {
-    led.setBrightness(255);
-    led.fill(current_Backlight_Color);
+    led.setBrightness(current_Brightness);
+    led.fill(current_Backlight_Color);      
     led.show();
     delay(100);
   }
