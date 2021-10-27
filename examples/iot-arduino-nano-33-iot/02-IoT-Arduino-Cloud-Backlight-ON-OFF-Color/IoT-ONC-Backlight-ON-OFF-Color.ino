@@ -3,11 +3,11 @@
   https://create.arduino.cc/cloud/things/place-here-id-number-of-your-thing
   The following variables are automatically generated and updated when changes are made to the Thing:
   bool backlight;
-  CloudColor backlight_Color;
+  CloudColor color;
    
   Variables which are marked as READ/WRITE in the Cloud Thing will also have functions
   which are called when their values are changed from the Dashboard: 
-  onBacklightChange() and onBacklightColorChange() 
+  onBacklightChange() and onColorChange() 
   These functions are generated with the Thing and added at the end of this sketch.
 */
 
@@ -99,7 +99,7 @@ void loop()
 // Declare the variables to store the RGB values
 void getBacklightColor()
 {
-  Color currentColor = Color(backlight_Color.getValue().hue, backlight_Color.getValue().sat, backlight_Color.getValue().bri); 
+  Color currentColor = Color(color.getValue().hue, color.getValue().sat, color.getValue().bri); 
   
   // Declare a variable of the Color data type and define it using the HSB values of the color variable
   byte RValue;
@@ -113,20 +113,17 @@ void getBacklightColor()
   current_Backlight_Color = led.Color(RValue, GValue, BValue);
 }
 
-//  Since Backlight is READ_WRITE variable, onBacklightChange() is
-//  executed every time a new value is received from IoT Cloud.
+// Executed every time a new backlight value is received from IoT Cloud
 void onBacklightChange()  
 {
   Serial.print("The Backlight is ");
   
-  if (backlight) 
+  if (backlight == true) 
   {
-    backlight_Status = true;
     led.fill(current_Backlight_Color);                // Fill all LEDs with a color
     Serial.println("ON");
   } else 
   {
-    backlight_Status = false;
     led.clear();                                      // Turn off LEDs
     Serial.println("OFF");
   }
@@ -135,13 +132,12 @@ void onBacklightChange()
   delay(100); 
 }
 
-// Since BacklightColor is READ_WRITE variable, onBacklightColorChange() is
-// executed every time a new value is received from IoT Cloud.
-void onBacklightColorChange()  
+// Executed every time a new color value is received from IoT Cloud
+void onColorChange()  
 {
   getBacklightColor();
   
-  if(backlight_Status == true)
+  if(backlight == true)
   {
     led.fill(current_Backlight_Color);                // Fill all LEDs with a color
     led.show();
