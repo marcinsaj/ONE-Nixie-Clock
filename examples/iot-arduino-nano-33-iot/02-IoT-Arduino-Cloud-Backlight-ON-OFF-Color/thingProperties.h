@@ -15,17 +15,20 @@ const char SSID[]     = SECRET_SSID;    // Network SSID (name)
 const char PASS[]     = SECRET_PASS;    // Network password (use for WPA, or use as key for WEP)
 
 void onBacklightChange();
-void onBacklightColorChange();
+void onColorChange();
+void onBrightnessChange();
 
 bool backlight;
-CloudColor backlight_Color;
+CloudColor color;
+int brightness;
 
 void initProperties(){
 
   ArduinoCloud.setThingId(THING_ID);
   ArduinoCloud.addProperty(backlight, READWRITE, ON_CHANGE, onBacklightChange);
-  ArduinoCloud.addProperty(backlight_Color, READWRITE, ON_CHANGE, onBacklightColorChange);
+  ArduinoCloud.addProperty(color, READWRITE, ON_CHANGE, onColorChange);
 
 }
 
 WiFiConnectionHandler ArduinoIoTPreferredConnection(SSID, PASS);
+
