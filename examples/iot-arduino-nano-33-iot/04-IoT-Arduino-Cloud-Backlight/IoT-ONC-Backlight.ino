@@ -126,7 +126,7 @@ void onBacklightChange()
     backlight_brightness = 2.55 * (backlight.getValue().bri);
     
     Serial.println(" ");
-    Serial.println("Brightness: ");
+    Serial.print("Brightness: ");
     Serial.print(backlight_brightness);
     Serial.println(" ");
 
