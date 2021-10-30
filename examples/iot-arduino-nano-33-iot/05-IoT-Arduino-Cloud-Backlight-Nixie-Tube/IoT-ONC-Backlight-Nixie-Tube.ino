@@ -19,7 +19,8 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Basic example of led backlight control - on/off & color & brightness with only one IoT widget
+// Example code showing the control of the nixie tube backlight 
+// and turning the tube on and off,
 // from desktop Arduino IoT Cloud Dashboard or Arduino IoT Cloud Remote App:
 // Android - https://bit.ly/arduino-android-app
 // IOS - https://bit.ly/arduino-ios-app
