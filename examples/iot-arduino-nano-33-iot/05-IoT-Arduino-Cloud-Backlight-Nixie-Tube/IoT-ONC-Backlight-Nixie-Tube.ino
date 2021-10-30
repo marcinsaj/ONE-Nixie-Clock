@@ -145,6 +145,8 @@ void setup()
   digitalWrite(LED_PIN, LOW);  
     
   digitalWrite(EN_NPS_PIN, LOW);          // Turn ON nixie power supply module       
+
+  ShiftOutData(0);                        // Clear Nixie Tube
 }
 
 void loop() 
