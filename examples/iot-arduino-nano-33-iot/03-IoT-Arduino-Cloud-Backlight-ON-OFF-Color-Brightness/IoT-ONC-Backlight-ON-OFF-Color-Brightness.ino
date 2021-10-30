@@ -13,11 +13,7 @@
   These functions are generated with the Thing and added at the end of this sketch.
 */
 
-// If you decide to use the Arduino Cloud Code Editor
-// then this file #include "arduino_secrets.h" should be omitted (commented).
-// Use "uncomment" only with Arduino IDE offline software.
-// #include "arduino_secrets.h"
-
+#include "arduino_secrets.h"
 #include "thingProperties.h"
 
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
