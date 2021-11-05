@@ -262,7 +262,7 @@ uint8_t brightnessTable[50]={
   241, 243, 245, 247, 249, 251, 252, 253, 254, 255
 };
 
-uint32_t startMillis = 0;           // Will store last time for synchronization timer
+uint32_t startMillis = 0;
 uint32_t counterMillis = 0;
 
 void setup() 
