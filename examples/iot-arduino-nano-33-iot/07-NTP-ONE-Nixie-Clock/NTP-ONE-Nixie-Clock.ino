@@ -262,6 +262,9 @@ uint8_t brightnessTable[50]={
   241, 243, 245, 247, 249, 251, 252, 253, 254, 255
 };
 
+uint32_t startMillis = 0;           // Will store last time for synchronization timer
+uint32_t counterMillis = 0;
+
 void setup() 
 { 
   pinMode(EN_NPS_PIN, OUTPUT);
@@ -486,9 +489,24 @@ void DisplayTime()
   timeMinute = now.minute();
   timeHour = now.hour();
  
-  if(timeHour == timeToSynchronizeTime && timeMinute == 0 && timeSecond == 0)
+  counterMillis = millis();
+
+  // In such a written configuration of time display, there is no simple way 
+  // to check the exact second when the time should be synchronized, 
+  // so the time synchronization is set to 3:00 AM 
+  // and to avoid multiple time synchronization at this time, 
+  // after time synchronization, the next time synchronization condition check 
+  // will be possible after 60 seconds
+  
+  if(counterMillis - startMillis > 60000)
   {
-    timeToSynchronizeTimeFlag = 1;  
+    startMillis = counterMillis;
+    
+    if(timeHour == timeToSynchronizeTime && timeMinute == 54)
+    {
+      timeToSynchronizeTimeFlag = 1;
+      startMillis = millis(); 
+    }  
   }
     
   // Check time format and adjust
