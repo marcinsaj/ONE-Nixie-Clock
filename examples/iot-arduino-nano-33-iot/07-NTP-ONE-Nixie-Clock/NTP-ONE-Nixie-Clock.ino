@@ -502,7 +502,7 @@ void DisplayTime()
   {
     startMillis = counterMillis;
     
-    if(timeHour == timeToSynchronizeTime && timeMinute == 54)
+    if(timeHour == timeToSynchronizeTime && timeMinute == 0)
     {
       timeToSynchronizeTimeFlag = 1;
       startMillis = millis(); 
