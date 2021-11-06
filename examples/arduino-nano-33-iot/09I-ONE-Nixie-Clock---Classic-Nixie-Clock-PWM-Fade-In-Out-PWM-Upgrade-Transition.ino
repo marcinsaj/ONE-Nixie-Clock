@@ -253,7 +253,7 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);     
 
-// Enable and configure generic clock generator 4
+  // Enable and configure generic clock generator 4
   GCLK->GENCTRL.reg = GCLK_GENCTRL_IDC |            // Improve duty cycle
                       GCLK_GENCTRL_GENEN |          // Enable generic clock gen
                       GCLK_GENCTRL_SRC_DFLL48M |    // Select 48MHz as source
@@ -357,7 +357,7 @@ void loop()
     serialState = 0;        
   }    
 
-  // Get time from RTC and display on nixie tubes
+  // Get the time from RTC and display it
   DisplayTime();
   
   // How often to run the cathode poisoning prevention routine
