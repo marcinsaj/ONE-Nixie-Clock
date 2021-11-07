@@ -65,6 +65,10 @@ uint32_t period = 100 - 1;      // Do not change the period!
 #define PWM_Divider       15    // 24 - 78Hz, 15 - 125Hz, 10 - 188Hz 
 // **************************************************************************
 
+// Each day at 3AM, the RTC DS3231 time will be synchronize with WIFI time
+#define timeToSynchronizeTime 6
+boolean timeToSynchronizeTimeFlag = 0;
+
 // NeoPixels LEDs pin
 #define LED_PIN       A3
 
@@ -251,6 +255,8 @@ uint8_t brightnessTable[50]={
 };
 
 // Millis time start
+uint32_t millis_start = 0;
+uint32_t millis_counter = 0;
 uint32_t millis_time_now = 0;
 uint32_t millis_time_now_2 = 0;
   
@@ -389,6 +395,32 @@ void DisplayTime()
 {
   loopCounter++;  
     
+  millis_counter = millis();
+
+  // In such a written configuration of time display, there is no simple way 
+  // to check the exact second when the time should be synchronized, 
+  // so the time synchronization is set to 3:00 AM 
+  // and to avoid multiple time synchronization at this time, 
+  // after time synchronization, the next time synchronization condition check 
+  // will be possible after 60 seconds
+  
+  if(millis_counter - millis_start > 60000)
+  {
+    millis_start = millis_counter;
+    
+    if(timeHour == timeToSynchronizeTime && timeMinute == 15)
+    {
+      timeToSynchronizeTimeFlag = 1;
+      millis_start = millis(); 
+    }  
+  }
+  
+  // Check if it's time to synchronize the time  
+  if(timeToSynchronizeTimeFlag == 1)
+  {
+    SynchronizeTime();    
+  }
+
   DateTime now = ds3231_rtc.now();
  
   timeHour = now.hour();
@@ -514,7 +546,6 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
   }
 
   ClearNixieTube();  
-  //delay(100);
 }
 
 // PWM fade in/out effect
@@ -654,6 +685,8 @@ void SynchronizeTime()
   Serial.println("--------------- Time has been Synchronized ------------------");
   Serial.println("#############################################################");
   Serial.println('\n');
+
+  timeToSynchronizeTimeFlag = 0;
 }
 
 // To minimize communication delays with the Arduino IoT Cloud 
