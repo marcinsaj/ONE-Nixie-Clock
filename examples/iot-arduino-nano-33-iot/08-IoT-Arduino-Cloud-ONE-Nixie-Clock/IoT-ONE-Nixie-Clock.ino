@@ -33,8 +33,6 @@ RTCZero main_rtc;         // RTC inside Nano 33 IoT
 #include <RTClib.h>       // https://github.com/adafruit/RTClib
 RTC_DS3231 ds3231_rtc;    // RTC DS3231 library declaration
 
-uint32_t epochTime = 0;
-uint8_t timeFormat = 0;
 uint8_t timeHour = 0;
 uint8_t timeMinute = 0;
 uint8_t timeSecond = 0;
@@ -45,17 +43,17 @@ uint8_t timeSecond = 0;
 
 // https://en.wikipedia.org/wiki/List_of_time_zones_by_country
 // Choose your Time Zone ****************************************************
-const int timeZone = 1;
+#define timeZone          1
 // ************************************************************************** 
+
+// Choose your hour to synchronize the Time via WiFi ************************
+// The RTC DS3231 always works in 24 hour mode so if you want to set 3:00AM 
+// use "3" if you want to set 14:00 use "14" etc. 
+#define timeToSynchronizeTime     3     // 3:00AM              
+// **************************************************************************
 
 // Set fade in/out effect delay *********************************************
 #define fadeDelay         12     // Best effect in range 5 - 20 milliseconds
-// **************************************************************************
-
-// Cathode poisoning prevention settings*************************************
-// How often to run the cathode poisoning prevention routine
-#define howOftenRoutine   1     // 0 - none, 1 - everytime, 
-                                // 2 - every second time and so on
 // **************************************************************************
 
 // Set PWM frequency ********************************************************
@@ -65,9 +63,14 @@ uint32_t period = 100 - 1;      // Do not change the period!
 #define PWM_Divider       15    // 24 - 78Hz, 15 - 125Hz, 10 - 188Hz 
 // **************************************************************************
 
-// Each day at 3AM, the RTC DS3231 time will be synchronize with WIFI time
-#define timeToSynchronizeTime 6
-boolean timeToSynchronizeTimeFlag = 0;
+// Cathode poisoning prevention settings*************************************
+// How often to run the cathode poisoning prevention routine
+#define routine   4             // 1 - everytime, 1 is default do not use it 
+                                // 2 - every second time and so on
+// **************************************************************************
+
+// How often to run the cathode poisoning prevention routine
+uint8_t howOftenCycle = routine;       // The settings are handled by onCycleChange() 
 
 // NeoPixels LEDs pin
 #define LED_PIN       A3
@@ -88,6 +91,9 @@ uint32_t hour_color = led.Color(0, 0, 255);
 // Green backlight color
 uint32_t minute_color = led.Color(0, 255,0);
 
+uint32_t backlight_Color;
+uint16_t max_Backlight_Brightness;
+
 // Shift registers control pins
 #define DIN_PIN     A0
 #define EN_PIN      A1
@@ -103,12 +109,9 @@ uint32_t minute_color = led.Color(0, 255,0);
 // for 15 segment nixie tubes (e.g. B-7971, B-8971)
 #define DETECT_PIN  A6    
 
-int loopCounter = 0;
+uint8_t loopCounter = 0;
 
-int analogDetectInput = 0;
-
-// Serial monitor state
-boolean serialState = 0;
+uint8_t analogDetectInput = 0;
 
 // Bit numbers 
 //
@@ -257,8 +260,17 @@ uint8_t brightnessTable[50]={
 // Millis time start
 uint32_t millis_start = 0;
 uint32_t millis_counter = 0;
-uint32_t millis_time_now = 0;
-uint32_t millis_time_now_2 = 0;
+
+uint16_t hue_Value = 0;
+uint8_t sat_Value = 0;
+uint8_t bri_Value = 0;
+
+uint16_t current_hue_Value = 0;
+uint8_t current_sat_Value = 0;
+uint8_t current_bri_Value = 0;
+
+boolean status_nixie_clock = false;
+boolean status_backlight = false;
   
 void setup() 
 { 
@@ -327,16 +339,18 @@ void setup()
   TCC0->CTRLA.reg |= (TCC_CTRLA_ENABLE);
   while (TCC0->SYNCBUSY.bit.ENABLE);              // Wait for synchronization
 
-  // Initialize serial and wait up to 5 seconds for port to open */
+  // Initialize serial and wait 5 seconds for port to open
   Serial.begin(9600);
-  for(unsigned long const serialBeginTime = millis(); !Serial && (millis() - serialBeginTime > 5000); ) { }
-
+  delay(5000);
+  
   // Defined in thingProperties.h
   initProperties();
 
   // Connect to Arduino IoT Cloud
   ArduinoCloud.begin(ArduinoIoTPreferredConnection);
 
+  delay(1000);
+  
   // Invoking `addCallback` on the ArduinoCloud object allows you to subscribe
   // to any of the available events and decide which functions to call when they are fired.
   // The function doThisOnConnect() will be called when the Clock connects to the cloud
@@ -354,35 +368,20 @@ void setup()
   ds3231_rtc.begin();  
    
   led.begin();                                    // Initialize NeoPixel led object
-  led.setBrightness(0);                           // Set brightness 0-255     
+  led.setBrightness(255);                         // Set full brightness  
   led.show();                                     // Turn OFF all pixels ASAP   
 
   delay(1000);
 
   Serial.println("#############################################################");
   Serial.println("-------------------- IoT ONE Nixie Clock --------------------");
-  // Millis time start
-  millis_time_now = millis();
-  millis_time_now_2 = millis();
-    
-  // Wait 5 seconds and print # progress bar
-  while((millis() < millis_time_now + 5000))
-  {         
-    if (millis() - millis_time_now_2 > 80)
-    {
-      Serial.print("#");
-      millis_time_now_2 = millis();    
-    }
-  }
-  
+  Serial.println("#############################################################");    
   Serial.println('\n');
+
+  delay(1000);
     
   // Wait for connection with Arduino IoT Cloud
-  while (ArduinoCloud.connected() == 0) 
-  {
-    ArduinoCloud.update();
-  }
-  
+  while (ArduinoCloud.connected() == 0) ArduinoCloud.update();
 }
 
 void loop() 
@@ -392,10 +391,12 @@ void loop()
 }
 
 void DisplayTime()
-{
-  loopCounter++;  
-    
-  millis_counter = millis();
+{   
+  DateTime now = ds3231_rtc.now();
+
+  timeHour = now.hour();
+  timeMinute = now.minute();
+  timeSecond = now.second();
 
   // In such a written configuration of time display, there is no simple way 
   // to check the exact second when the time should be synchronized, 
@@ -403,79 +404,70 @@ void DisplayTime()
   // and to avoid multiple time synchronization at this time, 
   // after time synchronization, the next time synchronization condition check 
   // will be possible after 60 seconds
-  
-  if(millis_counter - millis_start > 60000)
-  {
-    millis_start = millis_counter;
     
-    if(timeHour == timeToSynchronizeTime && timeMinute == 15)
+  if(timeHour == timeToSynchronizeTime && timeMinute == 0)
+  {
+    if(millis() - millis_start > 60000)
     {
-      timeToSynchronizeTimeFlag = 1;
-      millis_start = millis(); 
-    }  
-  }
-  
-  // Check if it's time to synchronize the time  
-  if(timeToSynchronizeTimeFlag == 1)
-  {
-    SynchronizeTime();    
+      SynchronizeTime();
+      millis_start = millis();
+    }
   }
 
-  DateTime now = ds3231_rtc.now();
- 
-  timeHour = now.hour();
-  timeFormat = hourFormat;
-    
-  // Check time format and adjust
-  if(timeFormat == 12 && timeHour > 12) timeHour = timeHour - 12;
-  if(timeFormat == 12 && timeHour == 0) timeHour = 12; 
-
-  timeMinute = now.minute();
-  timeSecond = now.second();
-
-  Serial.print("Time: ");
-  if(timeHour < 10)   Serial.print("0");
-  Serial.print(timeHour);
-  Serial.print(":");
-  if(timeMinute < 10) Serial.print("0");
-  Serial.print(timeMinute);  
-  Serial.print(":");
-  if(timeSecond < 10) Serial.print("0");
-  Serial.println(timeSecond);      
-
-  int digit_1;
-  int digit_2;
-
-  // Underscore symbol turn on for multisegment tubes
-  hourUnderscore = 1; 
-  
- // Extract individual digits
-  digit_1  = (timeHour / 10) % 10; 
-  digit_2  = (timeHour / 1)  % 10;
-  NixieDisplay(digit_1, digit_2, hour_color);
-    
-  DelayTime(400);
-
-  // Underscore symbol turn off for multisegment tubes
-  hourUnderscore = 0; 
-  
-  digit_1  = (timeMinute / 10) % 10;
-  digit_2  = (timeMinute / 1)  % 10;
-  NixieDisplay(digit_1, digit_2, minute_color);
-
-  DelayTime(2000);
-
-  // How often to run the cathode poisoning prevention routine
-  if(loopCounter == howOftenRoutine) 
+  if(status_nixie_clock == true)
   {
-    CathodePoisoningPrevention();
-    loopCounter = 0;
-  }   
+    loopCounter++;
+    
+    byte timeFormat = hourFormat;
+    
+    // Check time format and adjust
+    if(timeFormat == 12 && timeHour > 12) timeHour = timeHour - 12;
+    if(timeFormat == 12 && timeHour == 0) timeHour = 12; 
+
+    Serial.print("Time: ");
+    if(timeHour < 10)   Serial.print("0");
+    Serial.print(timeHour);
+    Serial.print(":");
+    if(timeMinute < 10) Serial.print("0");
+    Serial.print(timeMinute);  
+    Serial.print(":");
+    if(timeSecond < 10) Serial.print("0");
+    Serial.println(timeSecond);      
+
+    int digit_1;
+    int digit_2;
+
+    // Underscore symbol turn on for multisegment tubes
+    hourUnderscore = 1; 
+  
+    // Extract individual digits
+    digit_1  = (timeHour / 10) % 10; 
+    digit_2  = (timeHour / 1)  % 10;
+    NixieDisplay(digit_1, digit_2, hour_color);
+    
+    DelayTime(400);
+
+    // Underscore symbol turn off for multisegment tubes
+    hourUnderscore = 0; 
+  
+    digit_1  = (timeMinute / 10) % 10;
+    digit_2  = (timeMinute / 1)  % 10;
+    NixieDisplay(digit_1, digit_2, minute_color);
+
+    DelayTime(2000);
+
+    // How often to run the cathode poisoning prevention routine
+    if(loopCounter >= howOftenCycle) 
+    {
+      CathodePoisoningPrevention();
+      loopCounter = 0;
+    }
+  }     
 }
 
 // If a high state appears on the analog input, 
 // it means that a multi-segment tube socket has been inserted
-bool DetectNixieTube()
+boolean DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
@@ -503,25 +495,14 @@ void StopPWM ()
   while(TCC0->SYNCBUSY.bit.CTRLB);                    // Wait for synchronization
 }
 
-void NixieDisplay(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
+void NixieDisplay(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_Color)
 {
-  if(DetectNixieTube() == true) ShowSymbol(digit_1, digit_2, backlight_color);
-  else ShowDigit(digit_1, digit_2, backlight_color);
-}
-
-
-void SetLedBrightness(uint16_t baseBrightness, uint32_t backlight_color)
-{ 
-  
-  if (baseBrightness > 0) baseBrightness = (baseBrightness / 2) - 1;
-
-  led.setBrightness(255-brightnessTable[baseBrightness]);     // Set brightness 0 - 255   
-  led.fill(backlight_color);                                  // Fill all LEDs with a color
-  led.show();                                                 // Update LEDs
+  if(DetectNixieTube() == true) ShowSymbol(digit_1, digit_2, backlight_Color);
+  else ShowDigit(digit_1, digit_2, backlight_Color);
 }
 
 // PWM fade in/out effect
-void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
+void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_Color)
 {         
   for(int digits = 0 ; digits < 2; digits++)
   { 
@@ -531,7 +512,7 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
     for(int i = 100; i > 0; i = i - 2)
     { 
       UpdatePWM(i);
-      SetLedBrightness(i, backlight_color);
+      SetLedBrightness(i, backlight_Color);
       delay(fadeDelay);
     }
 
@@ -540,7 +521,7 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
     for(int i = 0; i <= 100 ; i = i + 2)
     { 
       UpdatePWM(i);
-      SetLedBrightness(i, backlight_color);
+      SetLedBrightness(i, backlight_Color);
       delay(fadeDelay);
     }     
   }
@@ -549,7 +530,7 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
 }
 
 // PWM fade in/out effect
-void ShowSymbol(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
+void ShowSymbol(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_Color)
 {        
   // Prepare for new data and turn off shift registers 
   UpdatePWM(100);
@@ -561,7 +542,7 @@ void ShowSymbol(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
   for(int i = 100; i > 0; i = i - 2)
   { 
     UpdatePWM(i);
-    SetLedBrightness(i, backlight_color);     
+    SetLedBrightness(i, backlight_Color);     
     delay(fadeDelay);
   }
 
@@ -601,7 +582,7 @@ void ShowSymbol(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_color)
   for(int i = 0; i <= 100 ; i = i + 2)
   { 
     UpdatePWM(i);
-    SetLedBrightness(i, backlight_color);
+    SetLedBrightness(i, backlight_Color);
     delay(fadeDelay);
   }        
   
@@ -650,9 +631,6 @@ void ShiftOutData(uint16_t character)
   // changes the purpose of the DIN pin and therefore the DIN declaration as output 
   // must be repeated before each data send to the shift registers
   pinMode(DIN_PIN, OUTPUT);  
-  
-  // Turn ON Nixie Power Supply Module
-  digitalWrite(EN_NPS_PIN, LOW);
 
   uint8_t first_half = character >> 8;  
   uint8_t second_half = character;     
@@ -667,7 +645,7 @@ void ShiftOutData(uint16_t character)
 
 void SynchronizeTime()
 {
-  epochTime = WiFi.getTime();
+  uint32_t epochTime = WiFi.getTime();
   main_rtc.setEpoch(epochTime);
 
   timeHour = main_rtc.getHours() + timeZone;
@@ -685,8 +663,6 @@ void SynchronizeTime()
   Serial.println("--------------- Time has been Synchronized ------------------");
   Serial.println("#############################################################");
   Serial.println('\n');
-
-  timeToSynchronizeTimeFlag = 0;
 }
 
 // To minimize communication delays with the Arduino IoT Cloud 
@@ -697,21 +673,95 @@ void SynchronizeTime()
 // will not interfere with the program's operation.
 void DelayTime(uint32_t wait)
 {
-  millis_time_now = millis();
-  while((millis() < millis_time_now + wait))
+  uint32_t millis_time_now = millis();
+  while(millis() - millis_time_now < wait)
   {         
     ArduinoCloud.update();
   }  
 }
 
+void SetLedBrightness(uint16_t base_Brightness, uint32_t backlight_Color)
+{     
+  uint8_t new_bri_Value = bri_Value;
+  new_bri_Value = new_bri_Value * base_Brightness * 0.01;
+  new_bri_Value = bri_Value - new_bri_Value;
+
+  // Convert HSB to RGB
+  // Declare a variable of the Color data type and define it using the HSB values of the color variable
+  Color currentColor = Color(hue_Value, sat_Value, new_bri_Value);
+
+  // Declare the variables to store the RGB values
+  uint8_t RValue;
+  uint8_t GValue;
+  uint8_t BValue;
+
+  // The variables will contain the RGB values after the function returns
+  currentColor.getRGB(RValue, GValue, BValue);
+
+  backlight_Color = led.Color(RValue, GValue, BValue);
+  
+  led.fill(backlight_Color);                                  // Fill all LEDs with a color
+  led.show();  
+}
+
+// Executed every time a new value is received from IoT Cloud.
 void onBacklightChange()
 {
+  current_hue_Value = backlight.getValue().hue;
+  current_sat_Value = backlight.getValue().sat;
+  current_bri_Value = backlight.getValue().bri;
+
+  status_backlight = backlight.getSwitch();
   
+  if(backlight.getSwitch() == true && status_nixie_clock == true)
+  {
+    hue_Value = current_hue_Value;
+    sat_Value = current_sat_Value;
+    bri_Value = current_bri_Value;
+    status_backlight == true;
+  }
+  else
+  {
+    bri_Value = 0;
+    status_backlight == false;
+  }
 }
 
 void onNixieClockChange()
 {
+  status_nixie_clock = nixie_Clock;
   
+  if(nixie_Clock == true)
+  {
+    // Turn ON Nixie Power Supply Module
+    digitalWrite(EN_NPS_PIN, LOW);
+    
+    if(status_backlight == true) 
+    {
+      hue_Value = current_hue_Value;
+      sat_Value = current_sat_Value;
+      bri_Value = current_bri_Value;
+    }
+    
+    status_nixie_clock = true; 
+  }
+  else
+  {
+    ClearNixieTube();
+    // Turn OFF Nixie Power Supply Module
+    digitalWrite(EN_NPS_PIN, HIGH);
+    bri_Value = 0;
+    status_nixie_clock = false;
+    DelayTime(1000);
+  }
+}
+
+// Cathode poisoning prevention routine
+// How often to run the cathode poisoning prevention routine
+void onCycleChange()
+{
+  if(cycle == true) howOftenCycle = 1;  // Everytime
+  else howOftenCycle = routine;         // Every fourth time
 }
 
 void doThisOnConnect()
