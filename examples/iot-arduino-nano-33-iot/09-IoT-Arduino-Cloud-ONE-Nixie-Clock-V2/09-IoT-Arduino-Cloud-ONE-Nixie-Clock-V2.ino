@@ -775,6 +775,7 @@ void onNixieClockChange()
   if(status_nixie_clock == true)
   {
     Serial.println("ONE Nixie Clock Turn ON");
+    
     // Turn ON Nixie Power Supply Module
     digitalWrite(EN_NPS_PIN, LOW);
 
@@ -797,9 +798,12 @@ void onNixieClockChange()
   else
   {
     Serial.println("ONE Nixie Clock Turn OFF");
+    
     ClearNixieTube();
+    
     // Turn OFF Nixie Power Supply Module
     digitalWrite(EN_NPS_PIN, HIGH);
+    
     hours_bri_Value = 0;
     minutes_bri_Value = 0;
     status_nixie_clock = false;
