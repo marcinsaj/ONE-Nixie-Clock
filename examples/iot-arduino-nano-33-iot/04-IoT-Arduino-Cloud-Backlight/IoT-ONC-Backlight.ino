@@ -22,8 +22,6 @@
 // Android - https://bit.ly/arduino-android-app
 // IOS - https://bit.ly/arduino-ios-app
 //
-// IoT ONE Nixie Clock Datasheet: https://bit.ly/IoT-Datasheet
-//
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
 // Arduino Nano 33 IoT - https://store.arduino.cc/arduino-nano-33-iot
