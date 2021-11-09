@@ -22,7 +22,7 @@
 // https://github.com/adafruit/Adafruit_NeoPixel
 // https://learn.adafruit.com/adafruit-neopixel-uberguide/arduino-library-use
 
-#include <RTClib.h>          
+#include <RTClib.h>
 // https://github.com/adafruit/RTClib
 
 // RTC library declaration
