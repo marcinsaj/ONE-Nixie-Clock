@@ -684,7 +684,7 @@ void DelayTime(uint32_t wait)
 
 void SetBacklight(uint16_t base_Brightness, boolean backlight_Color)
 {
-  uint8_t new_hue_Value = 0;
+  uint16_t new_hue_Value = 0;
   uint8_t new_sat_Value = 0;
   uint8_t new_bri_Value = 0;
   
@@ -719,7 +719,8 @@ void SetBacklight(uint16_t base_Brightness, boolean backlight_Color)
 
   uint32_t new_backlight_Color = led.Color(RValue, GValue, BValue);
   
-  led.fill(new_backlight_Color);                                  // Fill all LEDs with a color
+  // Fill all LEDs with a color
+  led.fill(new_backlight_Color);
   led.show();  
 }
 
@@ -734,7 +735,7 @@ void onFirstBacklightChange()
   
   if(status_backlightHours == true && status_nixie_clock == true)
   {
-    Serial.println("Backlight Minutes Turn ON");
+    Serial.println("Backlight Hours Turn ON");
     hours_hue_Value = current_hours_hue_Value;
     hours_sat_Value = current_hours_sat_Value;
     hours_bri_Value = current_hours_bri_Value;
@@ -742,7 +743,6 @@ void onFirstBacklightChange()
   }
   else
   {
-    Serial.println("Backlight Minutes Turn OFF");
     hours_bri_Value = 0;
     status_backlightHours == false;
   }
@@ -767,7 +767,6 @@ void onSecondBacklightChange()
   }
   else
   {
-    Serial.println("Backlight Minutes Turn OFF");
     minutes_bri_Value = 0;
     status_backlightMinutes == false;
   }
