@@ -38,7 +38,7 @@ uint8_t timeMinute = 0;
 uint8_t timeSecond = 0;
 
 // Choose Time Format *******************************************************
-#define hourFormat        12     // 12 Hour Clock or 24 Hour Clock
+#define hourFormat        24     // 12 Hour Clock or 24 Hour Clock
 // **************************************************************************
 
 // https://en.wikipedia.org/wiki/List_of_time_zones_by_country
