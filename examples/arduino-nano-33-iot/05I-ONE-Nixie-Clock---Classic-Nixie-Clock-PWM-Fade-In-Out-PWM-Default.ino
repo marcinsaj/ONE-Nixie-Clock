@@ -3,7 +3,7 @@
 //
 // Classic Nixie Clock with PWM fade in/out effect - Default
 // Arduino Nano 33 IoT PWM default frequency value is too high 
-// and "singing tube" audible noise may occur.
+// and "singing tube" audible noise may occur. 
 //
 // This example demonstrates how to set new time, display (time) digits or symbols 
 // fade in/out effect and fade in/out backlight color effect.
