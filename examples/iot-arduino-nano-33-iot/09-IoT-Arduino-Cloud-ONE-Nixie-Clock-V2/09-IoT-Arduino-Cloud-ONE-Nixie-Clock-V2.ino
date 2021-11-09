@@ -1,11 +1,12 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Classic Nixie Clock with PWM fade in/out effect Upgrade 
-// + multisegment tubes transition effect
-// This example demonstrates how to set PWM frequency 
-// and how to set new time, display (time) digits or symbols 
-// fade in/out effect and fade in/out backlight color effect.
+// IoT ONE Nixie Clock V2
+// This example demonstrates how to use Arduino IoT Cloud Dashboard
+// and Amazon Alexa Assistant to control ONE Nixie Clock
+// Control options: ON/OFF Nixie Clock, ON/OFF Cycle - cathode poisoning prevention routine,
+// First Backlight - ON/OFF, Color, Brightness - backlight for hours
+// Second Backlight - ON/OFF, Color, Brightness - backlight for minutes
 //
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
@@ -16,8 +17,8 @@
 // Nixie Tube Socket - https://bit.ly/nixie-socket & https://bit.ly/NixieSocket-Project
 // Nixie Power Supply module and RTC DS3231 module
 // Nixie Clock require 12V, 1.5A power supply
-// Schematic ONE Nixie Clock - http://bit.ly/ONE-Nixie-Clock-Schematic
-// Schematic Nixie Power Supply Module - http://bit.ly/ONE-Nixie-Clock-NPS-Module
+// Schematic ONE Nixie Clock - https://bit.ly/ONE-Nixie-Clock-Schematic
+// Schematic Nixie Power Supply Module - https://bit.ly/ONE-Nixie-Clock-NPS-Module
 // DS3231 RTC datasheet: https://datasheets.maximintegrated.com/en/ds/DS3231.pdf
 
 #include "arduino_secrets.h"
