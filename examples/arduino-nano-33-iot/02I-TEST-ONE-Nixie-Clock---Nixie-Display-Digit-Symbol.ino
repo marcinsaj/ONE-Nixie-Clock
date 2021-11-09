@@ -12,7 +12,7 @@
 // Nixie Tube Socket - https://bit.ly/nixie-socket & https://bit.ly/NixieSocket-Project
 // Nixie Power Supply module and RTC DS3231 module
 // Nixie Clock require 12V, 1.5A power supply
-// Schematic ONE Nixie Clock - http://bit.ly/ONE-Nixie-Clock-Schematic
+// Schematic ONE Nixie Clock - http://bit.ly/ONE-Nixie-Clock-Schematic 
 // Schematic Nixie Power Supply Module - http://bit.ly/ONE-Nixie-Clock-NPS-Module
 // DS3231 RTC datasheet: https://datasheets.maximintegrated.com/en/ds/DS3231.pdf
 
