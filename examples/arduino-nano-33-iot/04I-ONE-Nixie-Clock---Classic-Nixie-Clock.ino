@@ -1,7 +1,7 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Classic Nixie Clock without PWM fade in/out effect
+// Classic Nixie Clock without PWM fade in/out effect 
 // This example demonstrates how to set time using serial monitor, 
 // display (time) digits or symbols and backlight color effect.
 //
