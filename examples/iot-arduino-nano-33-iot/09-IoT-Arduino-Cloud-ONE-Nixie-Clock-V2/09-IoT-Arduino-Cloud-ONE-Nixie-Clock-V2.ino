@@ -4,9 +4,11 @@
 // IoT ONE Nixie Clock V2
 // This example demonstrates how to use Arduino IoT Cloud Dashboard
 // and Amazon Alexa Assistant to control ONE Nixie Clock
-// Control options: ON/OFF Nixie Clock, ON/OFF Cycle - cathode poisoning prevention routine,
-// First Backlight - ON/OFF, Color, Brightness - backlight for hours
-// Second Backlight - ON/OFF, Color, Brightness - backlight for minutes
+// Control options: 
+// ON/OFF Nixie Clock, 
+// ON/OFF Cycle - cathode poisoning prevention routine,
+// First Backlight - ON/OFF, Color, Brightness - backlight for hours,
+// Second Backlight - ON/OFF, Color, Brightness - backlight for minutes.
 //
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
