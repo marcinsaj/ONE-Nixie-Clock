@@ -594,33 +594,37 @@ void ClearNixieTube()
 }
 
 void CathodePoisoningPrevention()
-{
-  DelayTime(500);
-  StopPWM();
+{ 
+  if(status_nixie_clock == true)
+  {
+    DelayTime(500);
+    StopPWM();
 
-  // 15 cathodes nixie tube 
-  if(DetectNixieTube() == true)
-  {
-    for(int i = 0; i < 26; i++)
+    // 15 cathodes nixie tube 
+    if(DetectNixieTube() == true)
     {
-      ShiftOutData(animation[i]); 
-      DelayTime(80);
-    }
-  }
-  else  // 10 cathodes nixie tube
-  {
-    for(int i = 0; i <= 3; i++)
-    {
-      for(int j = 0; j < 10; j++)
+      for(int i = 0; i < 26; i++)
       {
-        ShiftOutData(digit_nixie_tube[j]); 
+        ShiftOutData(animation[i]); 
         DelayTime(80);
       }
-    }  
-  }
+    }
+    else  // 10 cathodes nixie tube
+    {
+      for(int i = 0; i <= 3; i++)
+      {
+        for(int j = 0; j < 10; j++)
+        {
+          ShiftOutData(digit_nixie_tube[j]); 
+          DelayTime(80);
+        }
+      }  
+    }
   
   ClearNixieTube();
   DelayTime(1000);
+  
+  }
 }
 
 void ShiftOutData(uint16_t character)
@@ -807,7 +811,11 @@ void onNixieClockChange()
     hours_bri_Value = 0;
     minutes_bri_Value = 0;
     status_nixie_clock = false;
-    DelayTime(2000);
+
+    led.clear();
+    led.show(); 
+    delay(1000);
+    DelayTime(4000);
   }
 }
 
