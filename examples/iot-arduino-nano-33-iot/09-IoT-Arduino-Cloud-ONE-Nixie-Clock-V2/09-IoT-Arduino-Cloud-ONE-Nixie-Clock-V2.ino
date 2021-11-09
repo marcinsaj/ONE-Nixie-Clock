@@ -48,7 +48,7 @@ uint8_t timeSecond = 0;
 
 // Choose your hour to synchronize the Time via WiFi ************************
 // The RTC DS3231 always works in 24 hour mode so if you want to set 3:00AM 
-// use "3" if you want to set 14:00 use "14" etc. 
+// use "3" if you want to set 14:00 or 2:00PM use "14" etc. 
 #define timeToSynchronizeTime     3     // 3:00AM              
 // **************************************************************************
 
@@ -70,7 +70,8 @@ uint32_t period = 100 - 1;      // Do not change the period!
 // **************************************************************************
 
 // How often to run the cathode poisoning prevention routine
-uint8_t howOftenCycle = routine;       // The settings are handled by onCycleChange() 
+// The settings are handled by onCycleChange()
+uint8_t howOftenCycle = routine; 
 
 // NeoPixels LEDs pin
 #define LED_PIN       A3
@@ -468,13 +469,11 @@ void DisplayTime()
   }     
 }
 
-// If a high state appears on the analog input, 
-// it means that a multi-segment tube socket has been inserted
+// If a high state appears it means that 
+// a multi-segment tube socket has been inserted
 boolean DetectNixieTube()
 {
   boolean detectInput = digitalRead(DETECT_PIN);
-  // 0 - 1024, Detecting anything above 0 means true
-  // 900 is for sure 
   return(detectInput);
 }
 
