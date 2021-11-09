@@ -19,7 +19,7 @@
 // https://github.com/adafruit/Adafruit_NeoPixel
 // https://learn.adafruit.com/adafruit-neopixel-uberguide/arduino-library-use
 
-// NeoPixels LEDs pin
+// NeoPixels LEDs pin 
 #define LED_PIN     A3
 
 // Number of NeoPixels LEDs
