@@ -533,9 +533,6 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, uint32_t backlight_Color)
 // PWM fade in/out effect
 void ShowSymbol(uint16_t digit_1, uint16_t digit_2, boolean backlight_Color)
 {        
-  // Prepare for new data and turn off shift registers 
-  UpdatePWM(100);
-
   uint16_t currentDigit = symbol_nixie_tube[digit_1];    
   if(hourUnderscore == 1) currentDigit = currentDigit | 0b0100000000000000;
   ShiftOutData(currentDigit);  
