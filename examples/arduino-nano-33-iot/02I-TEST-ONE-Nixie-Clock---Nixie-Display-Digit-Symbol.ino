@@ -1,7 +1,7 @@
 // ONE Nixie Clock by Marcin Saj https://nixietester.com
 // https://github.com/marcinsaj/ONE-Nixie-Clock
 //
-// Nixie Counter Example
+// Nixie Counter Example 
 // This example demonstrates how to display digits and symbols
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
