@@ -9,4 +9,4 @@
 <p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/extras/one-nixie-clock-time-reading.gif"></p>
 
 
-<p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Schematic.png"></p>
+<p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Schematic.jpg"></p>
