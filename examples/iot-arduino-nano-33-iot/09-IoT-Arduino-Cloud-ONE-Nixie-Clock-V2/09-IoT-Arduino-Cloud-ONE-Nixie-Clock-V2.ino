@@ -5,10 +5,10 @@
 // This example demonstrates how to use Arduino IoT Cloud Dashboard
 // and Amazon Alexa Assistant to control ONE Nixie Clock
 // Control options: 
-// ON/OFF Nixie Clock, 
-// ON/OFF Cycle - cathode poisoning prevention routine,
-// First Backlight - ON/OFF, Color, Brightness - backlight for hours,
-// Second Backlight - ON/OFF, Color, Brightness - backlight for minutes.
+// - ON/OFF Nixie Clock, 
+// - ON/OFF Cycle - cathode poisoning prevention routine,
+// - First Backlight - ON/OFF, Color, Brightness - backlight for hours,
+// - Second Backlight - ON/OFF, Color, Brightness - backlight for minutes.
 //
 // Hardware:
 // ONE Nixie Clock Arduino Shield - https://nixietester.com/project/one-nixie-clock
@@ -275,9 +275,6 @@ void setup()
 { 
   pinMode(EN_NPS_PIN, OUTPUT);
   digitalWrite(EN_NPS_PIN, HIGH);                 // Turn OFF nixie power supply module 
-
-  pinMode(DETECT_PIN, INPUT);
-  digitalWrite(DETECT_PIN, LOW);
   
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
@@ -476,8 +473,10 @@ void DisplayTime()
 // a multi-segment tube socket has been inserted
 boolean DetectNixieTube()
 {
-  boolean detectInput = digitalRead(DETECT_PIN);
-  return(detectInput);
+  uint16_t detectInput = analogRead(DETECT_PIN);
+  
+  if(detectInput > 900) return(true);
+  else return(false);
 }
 
 void StartPWM ()
