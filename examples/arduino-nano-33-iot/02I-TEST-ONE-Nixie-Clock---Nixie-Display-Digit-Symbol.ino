@@ -42,6 +42,12 @@ uint32_t backlight = led.Color(0, 0, 255);
 #define EN_PIN      A1
 #define CLK_PIN     A2
 
+// PWM pin for nixie tube fade effect.
+// Not used in this example but need to be declared.
+// For the correct operation of shift registers, 
+// the LOW state must be set
+#define PWM_PIN     10
+
 // Nixie Power Supply Module control pin
 #define EN_NPS_PIN  13 
 
@@ -148,8 +154,8 @@ void setup()
   pinMode(DIN_PIN, OUTPUT);
   digitalWrite(DIN_PIN, LOW);
 
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
+  pinMode(PWM_PIN, OUTPUT);
+  digitalWrite(PWM_PIN, LOW);  
     
   digitalWrite(EN_NPS_PIN, LOW);          // Turn ON nixie power supply module       
 }
@@ -165,8 +171,8 @@ bool DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
-  // 800 is for sure 
-  if(analogDetectInput >= 800) return(true);
+  // 950 is for sure 
+  if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
 
