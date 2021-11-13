@@ -16,11 +16,9 @@ const char PASS[]     = SECRET_PASS;    // Network password (use for WPA, or use
 
 void onBacklightChange();
 void onColorChange();
-void onBrightnessChange();
 
 bool backlight;
 CloudColor color;
-int brightness;
 
 void initProperties(){
 
