@@ -164,7 +164,7 @@ bool DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
-  // 800 is for sure 
+  // 950 is for sure 
   if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
