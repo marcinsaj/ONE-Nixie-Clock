@@ -5,7 +5,7 @@
 //
 // This example demonstrates how to display digits and symbols
 // Fade in/out effect for multisegment tubes has been turned off
-// because default Arduino Nano pwm frequency is too high 
+// because default Arduino Nano Every pwm frequency is too high 
 // and there is the undesirable effect of "singing tube" - audible noise
 // PWM option could be turned on by uncommenting two lines 
 // in ShowSymbol() function: "//analogWrite(PWM_PIN, i);" 
@@ -155,11 +155,9 @@ void setup()
   pinMode(DIN_PIN, OUTPUT);
   digitalWrite(DIN_PIN, LOW);
 
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
-
   pinMode(PWM_PIN, OUTPUT);
-      
+  digitalWrite(PWM_PIN, LOW);
+          
   digitalWrite(EN_NPS_PIN, LOW);          // Turn ON nixie power supply module       
 }
 
@@ -174,8 +172,8 @@ bool DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
-  // 900 is for sure 
-  if(analogDetectInput >= 900) return(true);
+  // 950 is for sure 
+  if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
 
@@ -236,6 +234,8 @@ void ShowSymbol()
     // fade in from min to max in decrements of 5 points
     for (int i = 255 ; i >= 0; i = i -5) 
     {
+      // Uncomment if you want to turn on 
+      // the PWM fade in out effect
       // analogWrite(PWM_PIN, i);
       led.setBrightness(255 - i);             // Set brightness
       led.fill(backlight);                    // Fill all LEDs with a color
@@ -250,6 +250,8 @@ void ShowSymbol()
     // fade out from max to min in increments of 5 points
     for (int i = 0 ; i <= 255; i = i +5) 
     {
+      // Uncomment if you want to turn on 
+      // the PWM fade in out effect
       // analogWrite(PWM_PIN, i);
       led.setBrightness(255 - i);             // Set brightness
       led.fill(backlight);                    // Fill all LEDs with a color
