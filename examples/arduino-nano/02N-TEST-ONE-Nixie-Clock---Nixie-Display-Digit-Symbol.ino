@@ -42,6 +42,12 @@ uint32_t backlight = led.Color(0, 0, 255);  // Blue
 #define EN_PIN      A1
 #define CLK_PIN     A2
 
+// PWM pin for nixie tube fade effect.
+// Not used in this example but need to be declared.
+// For the correct operation of shift registers, 
+// the LOW state must be set
+#define PWM_PIN     10
+
 // Nixie Power Supply Module control pin
 #define EN_NPS_PIN  13 
 
@@ -137,14 +143,15 @@ void setup()
 
   led.fill(backlight);                    // Fill all LEDs with a color
   led.show();                             // Update LEDs
-
-  delay(1000);
   
   pinMode(EN_NPS_PIN, OUTPUT);
   digitalWrite(EN_NPS_PIN, LOW);          // Turn ON nixie power supply module  
 
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
+
+  pinMode(PWM_PIN, OUTPUT);
+  digitalWrite(PWM_PIN, LOW);  
   
   pinMode(CLK_PIN, OUTPUT);
   digitalWrite(CLK_PIN, LOW);
@@ -204,4 +211,4 @@ void ShiftOutData(uint16_t character)
   // Return the latch pin high to signal chip that it
   // no longer needs to listen for information
   digitalWrite(EN_PIN, HIGH);
-}
+}  
