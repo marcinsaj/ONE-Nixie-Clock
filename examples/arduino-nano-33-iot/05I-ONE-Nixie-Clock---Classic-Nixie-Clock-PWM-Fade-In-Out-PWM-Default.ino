@@ -49,9 +49,8 @@ Adafruit_NeoPixel led(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 // NEO_KHZ800  800 KHz bitstream for WS2812 LEDs
 // NEO_GRB     Pixels are wired for GRB bitstream
 
-// Blue backlight color
-uint32_t hour_color = led.Color(0, 0, 255);
-uint32_t minute_color = led.Color(0, 255,0);
+uint32_t hour_color = led.Color(0, 0, 255);     // Blue color
+uint32_t minute_color = led.Color(0, 255,0);    // Green color
 
 // Shift registers control pins
 #define DIN_PIN     A0
@@ -171,9 +170,6 @@ void setup()
   
   pinMode(DIN_PIN, OUTPUT);
   digitalWrite(DIN_PIN, LOW);
-
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
 
   pinMode(PWM_PIN, OUTPUT);
   digitalWrite(PWM_PIN, LOW);  
@@ -310,8 +306,8 @@ bool DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
-  // 900 is for sure 
-  if(analogDetectInput >= 900) return(true);
+  // 950 is for sure 
+  if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
 
