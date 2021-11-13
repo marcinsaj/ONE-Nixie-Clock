@@ -202,7 +202,7 @@ void setup()
   delay(5000);
  
   pinMode(EN_NPS_PIN, OUTPUT);
-  digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
+  digitalWrite(EN_NPS_PIN, LOW);         // Turn ON nixie power supply module 
 
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
@@ -212,9 +212,6 @@ void setup()
   
   pinMode(DIN_PIN, OUTPUT);
   digitalWrite(DIN_PIN, LOW);
-
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
       
   Serial.println("##############################################################");
   Serial.println("------------ Test Example - Classic Nixie Clock --------------");
@@ -248,12 +245,6 @@ void setup()
   // Clear serial buffer
   while(Serial.available())
   Serial.read();
-
-  if(serialState == 0)
-  {
-    // Turn on the nixie power module if settings have not been selected
-    digitalWrite(EN_NPS_PIN, LOW); 
-  }   
 }
 
 void loop() 
@@ -264,17 +255,14 @@ void loop()
   if(serialState == 1)
   {
     SetNewTime();
-    serialState = 0;
-    
-    // Turn ON nixie power supply module
-    digitalWrite(EN_NPS_PIN, LOW);            
+    serialState = 0;           
   }    
 
   // Get time from RTC and display on nixie tubes
   DisplayTime();
   
   // How often to run the cathode poisoning prevention routine
-  if(loopCounter == howOftenRoutine) 
+  if(loopCounter >= howOftenRoutine) 
   {
     CathodePoisoningPrevention();
     loopCounter = 0;
@@ -364,13 +352,13 @@ bool DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
-  // 900 is for sure 
-  if(analogDetectInput >= 900) return(true);
+  // 950 is for sure 
+  if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
 
 void NixieDisplay(uint16_t digit, uint32_t backlight_color)
-{
+{ 
   if(DetectNixieTube() == true) ShowSymbol(digit, backlight_color);
   else ShowDigit(digit, backlight_color);
 }
