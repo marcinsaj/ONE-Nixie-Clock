@@ -133,6 +133,8 @@ void setup()
   led.show();                             // Turn OFF all pixels ASAP
   led.setBrightness(255);                 // Set brightness 0-255  
 
+  delay(1000);
+
   led.fill(backlight);                    // Fill all LEDs with a color
   led.show();                             // Update LEDs
 
@@ -148,10 +150,7 @@ void setup()
   digitalWrite(CLK_PIN, LOW);
   
   pinMode(DIN_PIN, OUTPUT);
-  digitalWrite(DIN_PIN, LOW);
-
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);    
+  digitalWrite(DIN_PIN, LOW);   
 }
 
 void loop() 
@@ -166,7 +165,7 @@ bool DetectNixieTube()
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
   // 800 is for sure 
-  if(analogDetectInput >= 900) return(true);
+  if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
 
