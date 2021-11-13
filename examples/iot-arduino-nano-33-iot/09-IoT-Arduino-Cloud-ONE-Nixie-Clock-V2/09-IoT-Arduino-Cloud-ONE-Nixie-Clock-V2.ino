@@ -283,10 +283,7 @@ void setup()
   digitalWrite(CLK_PIN, LOW);
   
   pinMode(DIN_PIN, OUTPUT);
-  digitalWrite(DIN_PIN, LOW);
-
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);     
+  digitalWrite(DIN_PIN, LOW);   
 
 // Enable and configure generic clock generator 4
   GCLK->GENCTRL.reg = GCLK_GENCTRL_IDC |            // Improve duty cycle
@@ -475,7 +472,7 @@ boolean DetectNixieTube()
 {
   uint16_t detectInput = analogRead(DETECT_PIN);
   
-  if(detectInput > 900) return(true);
+  if(detectInput > 950) return(true);
   else return(false);
 }
 
