@@ -244,10 +244,7 @@ void setup()
   digitalWrite(CLK_PIN, LOW);
   
   pinMode(DIN_PIN, OUTPUT);
-  digitalWrite(DIN_PIN, LOW);
-
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
+  digitalWrite(DIN_PIN, LOW); 
 
   pinMode(PWM_PIN, OUTPUT);
   digitalWrite(PWM_PIN, LOW);  
@@ -414,8 +411,8 @@ bool DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
-  // 900 is for sure 
-  if(analogDetectInput >= 900) return(true);
+  // 950 is for sure 
+  if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
 
