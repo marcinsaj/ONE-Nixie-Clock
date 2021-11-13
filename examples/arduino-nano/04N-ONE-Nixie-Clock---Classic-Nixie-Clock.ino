@@ -63,6 +63,12 @@ uint32_t minute_color = led.Color(0, 255, 0);  // Green
 #define EN_PIN      A1
 #define CLK_PIN     A2
 
+// PWM pin for nixie tube fade effect.
+// Not used in this example but need to be declared.
+// For the correct operation of shift registers, 
+// the LOW state must be set
+#define PWM_PIN     10
+
 // Nixie Power Supply Module control pin
 #define EN_NPS_PIN  13 
 
@@ -202,7 +208,7 @@ void setup()
   delay(5000);
  
   pinMode(EN_NPS_PIN, OUTPUT);
-  digitalWrite(EN_NPS_PIN, LOW);         // Turn ON nixie power supply module 
+  digitalWrite(EN_NPS_PIN, HIGH);         // Turn OFF nixie power supply module 
 
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
@@ -212,6 +218,9 @@ void setup()
   
   pinMode(DIN_PIN, OUTPUT);
   digitalWrite(DIN_PIN, LOW);
+
+  pinMode(PWM_PIN, OUTPUT);
+  digitalWrite(PWM_PIN, LOW); 
       
   Serial.println("##############################################################");
   Serial.println("------------ Test Example - Classic Nixie Clock --------------");
@@ -245,6 +254,12 @@ void setup()
   // Clear serial buffer
   while(Serial.available())
   Serial.read();
+
+  if(serialState == 0)
+  {
+    // Turn on the nixie power module if settings have not been selected
+    digitalWrite(EN_NPS_PIN, LOW); 
+  }   
 }
 
 void loop() 
@@ -255,7 +270,10 @@ void loop()
   if(serialState == 1)
   {
     SetNewTime();
-    serialState = 0;           
+    serialState = 0;
+    
+    // Turn ON nixie power supply module
+    digitalWrite(EN_NPS_PIN, LOW);            
   }    
 
   // Get time from RTC and display on nixie tubes
