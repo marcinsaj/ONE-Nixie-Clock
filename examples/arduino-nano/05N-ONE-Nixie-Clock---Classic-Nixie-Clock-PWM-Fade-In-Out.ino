@@ -223,9 +223,6 @@ void setup()
   pinMode(DIN_PIN, OUTPUT);
   digitalWrite(DIN_PIN, LOW);
 
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
-
   pinMode(PWM_PIN, OUTPUT);
   digitalWrite(PWM_PIN, LOW);  
       
