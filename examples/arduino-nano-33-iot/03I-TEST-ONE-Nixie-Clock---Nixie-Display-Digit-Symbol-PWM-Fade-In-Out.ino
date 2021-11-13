@@ -202,9 +202,6 @@ void setup()
   
   pinMode(DIN_PIN, OUTPUT);
   digitalWrite(DIN_PIN, LOW);
-
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);  
       
   digitalWrite(EN_NPS_PIN, LOW);                  // Turn ON nixie power supply module      
 }
@@ -220,8 +217,8 @@ bool DetectNixieTube()
 {
   analogDetectInput = analogRead(DETECT_PIN);
   // 0 - 1024, Detecting anything above 0 means true
-  // 900 is for sure 
-  if(analogDetectInput >= 900) return(true);
+  // 950 is for sure 
+  if(analogDetectInput >= 950) return(true);
   else return(false);  
 }
 
