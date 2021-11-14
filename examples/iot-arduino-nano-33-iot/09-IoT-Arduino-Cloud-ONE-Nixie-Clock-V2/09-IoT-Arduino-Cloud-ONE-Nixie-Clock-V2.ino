@@ -813,8 +813,6 @@ void onNixieClockChange()
       minutes_sat_Value = current_minutes_sat_Value;
       minutes_bri_Value = current_minutes_bri_Value;
     }
-    
-    status_nixie_clock = true; 
   }
   else
   {
