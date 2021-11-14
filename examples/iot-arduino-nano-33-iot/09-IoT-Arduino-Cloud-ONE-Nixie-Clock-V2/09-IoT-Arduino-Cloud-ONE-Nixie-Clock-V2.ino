@@ -36,6 +36,7 @@ RTCZero main_rtc;         // RTC inside Nano 33 IoT
 #include <RTClib.h>       // https://github.com/adafruit/RTClib
 RTC_DS3231 ds3231_rtc;    // RTC DS3231 library declaration
 
+uint32_t epochTime = 0;
 uint8_t timeHour = 0;
 uint8_t timeMinute = 0;
 uint8_t timeSecond = 0;
@@ -52,7 +53,7 @@ uint8_t timeSecond = 0;
 // Choose your hour to synchronize the Time via WiFi ************************
 // The RTC DS3231 always works in 24 hour mode so if you want to set 3:00AM 
 // use "3" if you want to set 14:00 or 2:00PM use "14" etc. 
-#define timeToSynchronizeTime     3     // 3:00AM              
+#define timeToSynchronizeTime     1     // 3:00AM              
 // **************************************************************************
 
 // Set fade in/out effect delay *********************************************
@@ -75,6 +76,10 @@ uint32_t period = 100 - 1;      // Do not change the period!
 // How often to run the cathode poisoning prevention routine
 // The settings are handled by onCycleChange()
 uint8_t howOftenCycle = routine; 
+
+// How many times to try to synchronize the Time
+uint8_t numberOfTries = 0; 
+uint8_t maxTries = 10;
 
 // NeoPixels LEDs pin
 #define LED_PIN       A3
@@ -406,7 +411,7 @@ void DisplayTime()
   // after time synchronization, the next time synchronization condition check 
   // will be possible after 60 seconds
     
-  if(timeHour == timeToSynchronizeTime && timeMinute == 0)
+  if(timeHour == timeToSynchronizeTime && timeMinute == 38)
   {
     if(millis() - millis_start > 60000)
     {
@@ -646,14 +651,27 @@ void ShiftOutData(uint16_t character)
 
 void SynchronizeTime()
 {
-  uint32_t epochTime = WiFi.getTime();
+  do 
+  {
+    epochTime = WiFi.getTime();
+    delay(100);
+    
+    numberOfTries++;
+  }
+  while ((epochTime == 0) && (numberOfTries < maxTries));
+
+  epochTime = WiFi.getTime();
+
+  Serial.print("Epoch Time: ");
+  Serial.println(epochTime);
+  
   main_rtc.setEpoch(epochTime);
 
   timeHour = main_rtc.getHours() + timeZone;
   if(timeHour < 0) timeHour = 24 + timeHour;  
   if(timeHour > 23) timeHour = timeHour - 24;  
 
-  timeMinute = main_rtc.getMinutes();
+  timeMinute = main_rtc.getMinutes(); 
   timeSecond = main_rtc.getSeconds();
 
   // Update RTC DS3231 module
