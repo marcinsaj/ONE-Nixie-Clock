@@ -57,7 +57,7 @@ uint8_t timeSecond = 0;
 // **************************************************************************
 
 // Set fade in/out effect delay *********************************************
-#define fadeDelay         12     // Best effect in range 5 - 20 milliseconds
+#define fadeDelay         10     // Best effect in range 5 - 20 milliseconds
 // **************************************************************************
 
 // Set PWM frequency ********************************************************
@@ -262,7 +262,6 @@ uint16_t current_minutes_hue_Value = 0;
 uint8_t current_minutes_sat_Value = 0;
 uint8_t current_minutes_bri_Value = 0;
 
-boolean status_cloud_sync = false;
 boolean status_nixie_clock = false;
 boolean status_backlight_hours = false;
 boolean status_backlight_minutes = false;
@@ -409,7 +408,7 @@ void DisplayTime()
   // after time synchronization, the next time synchronization condition check 
   // will be possible after 60 seconds
     
-  if(timeHour == timeToSynchronizeTime && timeMinute == 20)
+  if(timeHour == timeToSynchronizeTime && timeMinute == 00)
   {
     if(millis() - millis_start > 60000)
     {
@@ -448,9 +447,12 @@ void DisplayTime()
     digit_1  = (timeHour / 10) % 10; 
     digit_2  = (timeHour / 1)  % 10;
     NixieDisplay(digit_1, digit_2, hour_color);
-    
-    DelayTime(400);
 
+    DelayTime(400);
+    
+    // If the clock has been turned off, stop displaying
+    if(status_nixie_clock == false) return;
+  
     // Underscore symbol turn off for multisegment tubes
     hourUnderscore = 0; 
   
@@ -461,7 +463,7 @@ void DisplayTime()
     DelayTime(2000);
 
     // How often to run the cathode poisoning prevention routine
-    if(loopCounter >= howOftenCycle) 
+    if(loopCounter >= howOftenCycle && status_nixie_clock == true) 
     {
       CathodePoisoningPrevention();
       loopCounter = 0;
@@ -507,7 +509,6 @@ void NixieDisplay(uint16_t digit_1, uint16_t digit_2, boolean backlight_Color)
 // PWM fade in/out effect
 void ShowDigit(uint16_t digit_1, uint16_t digit_2, boolean backlight_Color)
 {         
-  // 
   for(int digits = 0 ; digits <= 1; digits++)
   { 
     if(digits == 0) ShiftOutData(digit_nixie_tube[digit_1]);
@@ -517,16 +518,19 @@ void ShowDigit(uint16_t digit_1, uint16_t digit_2, boolean backlight_Color)
     { 
       UpdatePWM(i);
       SetBacklight(i, backlight_Color);
-      delay(fadeDelay);
+      DelayTime(fadeDelay);
     }
 
-    DelayTime(500);
+    DelayTime(500);    
+    
+    // If the clock has been turned off, stop displaying
+    if(status_nixie_clock == false) return;
 
     for(int i = 0; i <= 100 ; i = i + 2)
     { 
       UpdatePWM(i);
       SetBacklight(i, backlight_Color);
-      delay(fadeDelay);
+      DelayTime(fadeDelay);
     }     
   }
 
@@ -544,10 +548,13 @@ void ShowSymbol(uint16_t digit_1, uint16_t digit_2, boolean backlight_Color)
   { 
     UpdatePWM(i);
     SetBacklight(i, backlight_Color);     
-    delay(fadeDelay);
+    DelayTime(fadeDelay);
   }
 
   DelayTime(800);
+  
+  // If the clock has been turned off, stop displaying
+  if(status_nixie_clock == false) return;
 
   for(int i = 0; i < 8; i++)
   {
@@ -577,14 +584,20 @@ void ShowSymbol(uint16_t digit_1, uint16_t digit_2, boolean backlight_Color)
     DelayTime(80);
   }  
 
+  // If the clock has been turned off, stop displaying
+  if(status_nixie_clock == false) return;
+
   ShiftOutData(originalDigit);
   DelayTime(800);
+
+  // If the clock has been turned off, stop displaying
+  if(status_nixie_clock == false) return;
 
   for(int i = 0; i <= 100 ; i = i + 2)
   { 
     UpdatePWM(i);
     SetBacklight(i, backlight_Color);
-    delay(fadeDelay);
+    DelayTime(fadeDelay);
   }        
   
   ClearNixieTube(); 
@@ -746,61 +759,62 @@ void DelayTime(uint32_t wait)
 // Executed every time a new value is received from IoT Cloud.
 void onFirstBacklightChange()
 {
+  Serial.println("#############################################################");
   Serial.println("Inside: onFirstBacklightChange");
   Serial.println("Setup backlight for hours");
+  Serial.println("#############################################################");
 
-  if(status_cloud_sync == true)
-  {  
-    current_hours_hue_Value = firstBacklight.getValue().hue;
-    current_hours_sat_Value = firstBacklight.getValue().sat;
-    current_hours_bri_Value = firstBacklight.getValue().bri;
-    status_backlight_hours = firstBacklight.getSwitch();
-  }
+  current_hours_hue_Value = firstBacklight.getValue().hue;
+  current_hours_sat_Value = firstBacklight.getValue().sat;
+  current_hours_bri_Value = firstBacklight.getValue().bri;
+  status_backlight_hours = firstBacklight.getSwitch();
 }
 
 // Executed every time a new value is received from IoT Cloud.
 void onSecondBacklightChange()
 {
+  Serial.println("#############################################################");
   Serial.println("Inside: onSecondBacklightChange");
   Serial.println("Setup backlight for minutes");
+  Serial.println("#############################################################");
   
-  if(status_cloud_sync == true)
-  {
-    current_minutes_hue_Value = secondBacklight.getValue().hue;
-    current_minutes_sat_Value = secondBacklight.getValue().sat;
-    current_minutes_bri_Value = secondBacklight.getValue().bri;
-    status_backlight_minutes = secondBacklight.getSwitch();
-  } 
+  current_minutes_hue_Value = secondBacklight.getValue().hue;
+  current_minutes_sat_Value = secondBacklight.getValue().sat;
+  current_minutes_bri_Value = secondBacklight.getValue().bri;
+  status_backlight_minutes = secondBacklight.getSwitch();
 }
 
 void onNixieClockChange()
 {
+  Serial.println("#############################################################");
   Serial.println("Inside: onNixieClockChange");
+  Serial.println("#############################################################");
   
-  if(status_cloud_sync == true)
+  status_nixie_clock = nixieClock;
+  
+  if(status_nixie_clock == true)
   {
-    status_nixie_clock = nixieClock;
-  
-    if(status_nixie_clock == true)
-    {
-      // Turn ON Nixie Power Supply Module
-      digitalWrite(EN_NPS_PIN, LOW);
-            
-      Serial.println("ONE Nixie Clock Turn ON");
-    }
-    else
-    {
-      ClearNixieTube();      
-    
-      // Turn OFF Nixie Power Supply Module
-      digitalWrite(EN_NPS_PIN, HIGH);
-    
-      Serial.println("ONE Nixie Clock Turn OFF");
+    // Turn ON Nixie Power Supply Module
+    digitalWrite(EN_NPS_PIN, LOW);
 
-      led.clear();
-      led.show(); 
-      delay(4000);
-    }
+    Serial.println("#############################################################");      
+    Serial.println("ONE Nixie Clock Turn ON");
+    Serial.println("#############################################################");
+  }
+  else
+  {
+    ClearNixieTube();      
+    
+    // Turn OFF Nixie Power Supply Module
+    digitalWrite(EN_NPS_PIN, HIGH);
+    
+    Serial.println("#############################################################");
+    Serial.println("ONE Nixie Clock Turn OFF");
+    Serial.println("#############################################################");
+
+    led.clear();
+    led.show(); 
+    DelayTime(2000);
   }
 }
 
@@ -808,29 +822,29 @@ void onNixieClockChange()
 // How often to run the cathode poisoning prevention routine
 void onCycleChange()
 {
-  if(status_cloud_sync == true)
-  {
-    if(cycle == true) howOftenCycle = 1;  // Everytime
-    else howOftenCycle = routine;         // Every fourth time  
-  }
+  Serial.println("#############################################################");
+  Serial.println("Inside: onCycleChange");
+  Serial.println("Setup cathode poisoning prevention routine");
+  Serial.println("#############################################################");
+
+  if(cycle == true) howOftenCycle = 1;  // Everytime
+  else howOftenCycle = routine;         // Every fourth time  
 }
 
 void doThisOnSync()
 { 
+  Serial.println("#############################################################");
   Serial.println("Inside: doThisOnSync");
   Serial.println("Satisfactory data synchronization");
-
-  status_cloud_sync = true;
-  onCycleChange();
-  onNixieClockChange();
-  onFirstBacklightChange();
-  onSecondBacklightChange();
+  Serial.println("#############################################################");
 }
 
 void doThisOnConnect()
 {
+  Serial.println("#############################################################");
   Serial.println("Inside: doThisOnConnect");
   Serial.println("Connected to Arduino IoT Cloud");
+  Serial.println("#############################################################");
 
   Serial.println(" ");
   SynchronizeTime();
@@ -838,8 +852,9 @@ void doThisOnConnect()
 
 void doThisOnDisconnect()
 {  
+  Serial.println("#############################################################");
   Serial.println("Inside: doThisOnDisconnect");
   Serial.println("No Time to Die");
   Serial.println("Check your System");
-  status_cloud_sync = false;    
+  Serial.println("#############################################################");  
 }
