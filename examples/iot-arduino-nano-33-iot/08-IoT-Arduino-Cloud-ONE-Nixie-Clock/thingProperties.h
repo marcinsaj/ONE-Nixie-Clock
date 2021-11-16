@@ -14,18 +14,24 @@ const char THING_ID[] = "place-here-id-number-of-your-thing-from-iot-arduino-clo
 const char SSID[]     = SECRET_SSID;    // Network SSID (name)
 const char PASS[]     = SECRET_PASS;    // Network password (use for WPA, or use as key for WEP)
 
+void onNixieClockChange();
+void onCycleChange();
+void onFirstBacklightChange();
+void onSecondBacklightChange();
 
+CloudSwitch nixieClock;
+CloudSwitch cycle;
+CloudColoredLight firstBacklight;
+CloudColoredLight secondBacklight;
 
+void initProperties(){
 
+  ArduinoCloud.setThingId(THING_ID);
+  ArduinoCloud.addProperty(nixieClock, READWRITE, ON_CHANGE, onNixieClockChange);
+  ArduinoCloud.addProperty(cycle, READWRITE, ON_CHANGE, onCycleChange);
+  ArduinoCloud.addProperty(firstBacklight, READWRITE, ON_CHANGE, onFirstBacklightChange);
+  ArduinoCloud.addProperty(secondBacklight, READWRITE, ON_CHANGE, onSecondBacklightChange);
 
-
-
-
-
-
-
-
-
-
+}
 
 WiFiConnectionHandler ArduinoIoTPreferredConnection(SSID, PASS);
