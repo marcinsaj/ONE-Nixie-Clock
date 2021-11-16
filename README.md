@@ -9,7 +9,6 @@
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/tree/main/examples/iot-arduino-nano-33-iot/06-IoT-Arduino-Cloud-Backlight-Nixie-Tube-Nixie-Display">06-IoT-Arduino-Cloud-Backlight-Nixie-Tube-Nixie-Display</a>
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/tree/main/examples/iot-arduino-nano-33-iot/07-NTP-ONE-Nixie-Clock">07-NTP-ONE-Nixie-Clock</a>
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/tree/main/examples/iot-arduino-nano-33-iot/08-IoT-Arduino-Cloud-ONE-Nixie-Clock">08-IoT-Arduino-Cloud-ONE-Nixie-Clock</a>
-- <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/tree/main/examples/iot-arduino-nano-33-iot/09-IoT-Arduino-Cloud-ONE-Nixie-Clock-V2">09-IoT-Arduino-Cloud-ONE-Nixie-Clock-V2</a>
 
 
 ### CLASSIC ONE NIXIE CLOCK - ARDUINO NANO 33 IOT
