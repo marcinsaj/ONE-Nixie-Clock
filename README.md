@@ -2,7 +2,7 @@
 
 ### DATASHEET
 - ONE Nixie Clock - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Assembly-Instruction.pdf">Assembly Instruction</a>
-- ONE Nixie Clock - <a target="_blank" href="hhttps://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Schematic.pdf">Schematic</a>
+- ONE Nixie Clock - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Schematic.pdf">Schematic</a>
 - Nixie Tube Sockets - <a target="_blank" href="https://nixietester.com/project/nixie-sockets/">Project Description</a>
 - Nixie Tube Sockets - <a target="_blank" href="https://github.com/marcinsaj/Nixie-Tube-Sockets/blob/master/datasheet/Nixie-Tube-Socket-Assembly-Instruction.pdf">Assembly Instruction</a>
 - Nixie Tube Sockets - <a target="_blank" href="https://github.com/marcinsaj/Nixie-Tube-Sockets">Schematics</a>
