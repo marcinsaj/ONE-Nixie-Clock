@@ -14,7 +14,7 @@ If you use Arduino IDE offline software then you should download folowing files 
    - define SECRET_PASS "type here your wifi password"
    - const char THING_ID[] = "place-here-id-number-of-your-thing-from-iot-arduino-cloud";
 6. Upload sketch.
-
+_***ONC - ONE Nixie Clock
 <p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/extras/one-nixie-clock-on-off.gif"></p>
 
 # All Tutorials
