@@ -1,5 +1,27 @@
 # ONE-Nixie-Clock
 
+### DATASHEET
+- ONE Nixie Clock - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Assembly-Instruction.pdf">Assembly Instruction</a>
+- ONE Nixie Clock - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Schematic.pdf">Schematic</a>
+- Nixie Tube Sockets - <a target="_blank" href="https://nixietester.com/project/nixie-sockets/">Project Description</a>
+- Nixie Tube Sockets - <a target="_blank" href="https://github.com/marcinsaj/Nixie-Tube-Sockets/blob/master/datasheet/Nixie-Tube-Socket-Assembly-Instruction.pdf">Assembly Instruction</a>
+- Nixie Tube Sockets - <a target="_blank" href="https://github.com/marcinsaj/Nixie-Tube-Sockets">Schematics</a>
+- Nixie Power Supply Module - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/Nixie-Module-Power-Supply-Schematic.pdf">Schematic</a>
+
+
+### ARDUINO IOT CLOUD - TUTORIALS
+- How to open Arduino IoT account and connect ONE Nixie Clock to the Cloud
+- How to Control IoT ONE Nixie Clock - Backlight ON/OFF
+- How to Control IoT ONC - Backlight ON/OFF & Color
+- How to Control IoT ONC - Backlight ON/OFF & Color & Brightness
+- How to Control IoT ONC - Backlight Full Control - One Widget
+- How to Control IoT ONC - Backlight Full Control & Nixie Tube ON/OFF
+- How to Control IoT ONC - Backlight Full Control & Nixie Tube Display
+- How to Control IoT ONE Nixie Clock
+- How to Control IoT ONE Nixie Clock - Alexa Voice Control
+*ONC - ONE Nixie Clock
+
+
 ### IOT ONE NIXIE CLOCK - ARDUINO NANO 33 IOT
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/tree/main/examples/iot-arduino-nano-33-iot/01-IoT-Arduino-Cloud-Backlight-ON-OFF">01-IoT-Arduino-Cloud-Backlight-ON-OFF</a>
 - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/tree/main/examples/iot-arduino-nano-33-iot/02-IoT-Arduino-Cloud-Backlight-ON-OFF-Color">02-IoT-Arduino-Cloud-Backlight-ON-OFF-Color</a>
