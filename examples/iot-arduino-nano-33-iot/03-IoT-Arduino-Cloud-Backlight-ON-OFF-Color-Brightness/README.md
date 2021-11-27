@@ -15,7 +15,7 @@ If you use Arduino IDE offline software then you should download folowing files 
    - const char THING_ID[] = "place-here-id-number-of-your-thing-from-iot-arduino-cloud";
 6. Upload sketch.
 <br/><br/>***ONC - ONE Nixie Clock
-<p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/extras/one-nixie-clock-on-off.gif"></p>
+<p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/extras/one-nixie-clock-brightness.gif"></p>
 
 # All Tutorials
 - How to Connect ONC to the Arduino IoT Cloud
