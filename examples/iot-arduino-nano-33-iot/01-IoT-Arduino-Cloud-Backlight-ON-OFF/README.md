@@ -13,14 +13,14 @@
 
 - IoT-ONC-Backlight-Control.ino
 
-<br/>
+
 ### If you use Arduino IDE offline software then you should use these files: <br/>
 
 - IoT-ONC-Backlight-Control.ino
 - arduino-secrets.h
 - thingProperties.h
 
-<br/>
+
 ### Copy all files into one folder "IoT-ONC-Backlight-Control" open "arduino-secrets.h" and "thingProperties.h" and edit the required informations: <br/>
 
 - define SECRET_SSID "type here your wifi network name"
