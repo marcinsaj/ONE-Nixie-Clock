@@ -9,6 +9,8 @@
 - IoT ONE Nixie Clock & Arduino Cloud
 <br/>
 
+<p align="center"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/extras/one-nixie-clock-on-off.gif"></p>
+
 ## If you decide to use the Arduino Cloud Code Editor then you should use only this sketch: <br/>
 
 - IoT-ONC-Backlight-Control.ino
