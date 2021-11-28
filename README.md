@@ -10,8 +10,9 @@
 
 
 ### ARDUINO IOT CLOUD - TUTORIALS
-- How to open Arduino IoT account and connect ONE Nixie Clock to the Cloud
-- How to Control IoT ONE Nixie Clock - Backlight ON/OFF
+- <a target="_blank" href="https://www.hackster.io/MarcinSaj/one-nixie-clock-assembly-and-start-up-instructions-33c2d7">ONE Nixie Clock - Assembly and Start-up Instructions</a>
+- <a target="_blank" href="https://www.hackster.io/MarcinSaj/how-to-connect-one-nixie-clock-to-the-arduino-iot-cloud-e85081">How to open Arduino IoT account and connect ONE Nixie Clock to the Cloud</a>
+- <a target="_blank" href="https://www.hackster.io/MarcinSaj/iot-one-nixie-clock-arduino-cloud-backlight-on-off-efd9e9">How to Control IoT ONE Nixie Clock - Backlight ON/OFF</a>
 - How to Control IoT ONC - Backlight ON/OFF & Color
 - How to Control IoT ONC - Backlight ON/OFF & Color & Brightness
 - How to Control IoT ONC - Backlight Full Control - One Widget
