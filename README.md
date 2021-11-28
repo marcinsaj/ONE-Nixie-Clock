@@ -1,5 +1,8 @@
 # ONE-Nixie-Clock
 
+<a href="https://www.kickstarter.com/projects/marcinsaj/one-nixie-clock-iot-voice-controlled-based-on-arduino"><img src="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/extras/kickstarter.jpg" alt="Find project on Kickstarter"></a>
+Find project on <a target="_blank" href="https://www.kickstarter.com/projects/marcinsaj/one-nixie-clock-iot-voice-controlled-based-on-arduino">Kickstarter</a>
+
 ### DATASHEET
 - ONE Nixie Clock - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Assembly-Instruction.pdf">Assembly Instruction</a>
 - ONE Nixie Clock - <a target="_blank" href="https://github.com/marcinsaj/ONE-Nixie-Clock/blob/main/datasheet/ONE-Nixie-Clock-Schematic.pdf">Schematic</a>
