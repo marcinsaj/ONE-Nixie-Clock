@@ -68,8 +68,12 @@ uint32_t period = 100 - 1;      // Do not change the period!
 // **************************************************************************
 
 // Cathode poisoning prevention settings*************************************
-// How often to run the cathode poisoning prevention routine
-#define routine   4             // 1 - everytime, 1 is default do not use it 
+// How often to run the cathode poisoning prevention routine.
+// By default, cathode poisoning prevention is always on, 
+// you can set how often to run it. 
+// If you enable cycle with Arduino IoT Cloud dashboard or Alexa Assistant 
+// then the cycle will run every time.
+#define routine   5             // 1 - everytime, 1 is default do not use it 
                                 // 2 - every second time and so on
 // **************************************************************************
 
