@@ -4,9 +4,9 @@
    - Android - https://bit.ly/arduino-android-app
    - iOS - https://bit.ly/arduino-ios-app
 3. Open this guide <a target="_blank" href="https://www.hackster.io/MarcinSaj/iot-one-nixie-clock-arduino-cloud-backlight-on-off-efd9e9">"How to Control IoT ONC Backlight - ON/OFF"</a> and follow step by step.
-4. If you decide to use the Arduino Cloud Code Editor then use only this code "IoT-ONC-Backlight-Control.ino" <br/>
+4. If you decide to use the Arduino Cloud Code Editor then use only this code "IoT-ONC-Backlight-ON-OFF.ino" <br/>
 If you use Arduino IDE offline software then you should download folowing files into one folder "IoT-ONC-Backlight-Control":
-   - IoT-ONC-Backlight-Control.ino
+   - IoT-ONC-Backlight-ON-OFF.ino
    - arduino-secrets.h
    - thingProperties.h
 5. (offline) Open "arduino-secrets.h" and "thingProperties.h" and edit the required informations:
