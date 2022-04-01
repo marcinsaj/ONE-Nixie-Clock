@@ -227,6 +227,23 @@ uint16_t digit_nixie_tube[]={
   0b0000001000000000    // 9    
 };
 
+/*
+// Bit notation of 7-segment tube digits
+// Socket no.29, MG-17G nixie tube 
+uint16_t digit_nixie_tube[]={
+  0b0000000001110111,   // 0
+  0b0000000000100100,   // 1
+  0b0000000001011101,   // 2
+  0b0000000001101101,   // 3
+  0b0000000000101110,   // 4
+  0b0000000001101011,   // 5
+  0b0000000001111011,   // 6
+  0b0000000000100101,   // 7
+  0b0000000001111111,   // 8
+  0b0000000001101111    // 9    
+};
+*/
+
 // LEDs brightness matching values with nixie fade in out effect
 uint8_t brightnessTable[50]={
     0,  10,  20,  30,  40,  50,  60,  70,  90,  90, 
