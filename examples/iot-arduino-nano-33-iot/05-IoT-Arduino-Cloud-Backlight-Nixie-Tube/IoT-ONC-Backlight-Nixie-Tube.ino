@@ -104,6 +104,12 @@ uint16_t nixie_symbol = 0b0000000010101010;   // X
 // Bit notation of 10-segment tube digit 
 uint16_t nixie_digit = 0b0000001000000000;    // 9
 
+/*
+// Bit notation of 7-segment tube digits
+// Socket no.29, MG-17G nixie tube 
+uint16_t nixie_digit = 0b0000000001101111;    // 9
+*/
+
 uint32_t backlight_color;
 uint16_t backlight_brightness;
 
