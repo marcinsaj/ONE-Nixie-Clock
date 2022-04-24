@@ -53,7 +53,7 @@ uint8_t timeSecond = 0;
 // Choose your hour to synchronize the Time via WiFi ************************
 // The RTC DS3231 always works in 24 hour mode so if you want to set 3:00AM 
 // use "3" if you want to set 14:00 or 2:00PM use "14" etc. 
-#define timeToSynchronizeTime     23     // 3:00AM              
+#define timeToSynchronizeTime     3     // 3:00AM              
 // **************************************************************************
 
 // Set fade in/out effect delay *********************************************
